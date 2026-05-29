@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>M&B · Sistema Jurídico</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ouro:#B8960C;--ouro-claro:#D4AF37;--ouro-brilho:#F0CC50;
+  --preto:#050505;--bg:#0A0A0A;--card:#111;--card2:#161616;
+  --borda:rgba(184,150,12,0.12);--borda2:rgba(255,255,255,0.06);
+  --texto:#F0EDE6;--texto2:#888;--texto3:#444;
+}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--texto);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--ouro);border-radius:2px}
+
+/* ── TELA DE LOGIN ── */
+#loginScreen{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:var(--preto);padding:20px;
+  position:relative;overflow:hidden;
+}
+#loginScreen::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(184,150,12,0.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.login-card{
+  width:100%;max-width:420px;
+  background:var(--card);border:0.5px solid var(--borda);
+  border-radius:20px;padding:48px 40px;
+  position:relative;z-index:1;
+  animation:cardIn 0.5s cubic-bezier(.16,1,.3,1);
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(24px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.login-logo{
+  text-align:center;margin-bottom:32px;
+}
+.login-logo-txt{
+  font-family:"Cormorant Garamond",serif;
+  font-size:26px;font-weight:400;letter-spacing:1px;
+  color:var(--texto);
+}
+.login-logo-txt span{color:var(--ouro-claro)}
+.login-logo-sub{font-size:11px;color:var(--texto3);letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+.login-divider{
+  width:40px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--ouro),transparent);
+  margin:24px auto;
+}
+.login-title{
+  font-family:"Cormorant Garamond",serif;
+  font-size:20px;font-weight:400;
+  color:var(--texto);margin-bottom:24px;text-align:center;
+}
+.form-group{margin-bottom:16px}
+.form-label{
+  display:block;font-size:10px;font-weight:400;
+  letter-spacing:1px;color:var(--texto3);
+  text-transform:uppercase;margin-bottom:6px;
+}
+.form-input{
+  width:100%;background:var(--card2);border:0.5px solid var(--borda2);
+  border-radius:10px;padding:12px 16px;
+  color:var(--texto);font-family:"DM Sans",sans-serif;
+  font-size:14px;font-weight:300;outline:none;
+  transition:border-color 0.2s;
+}
+.form-input:focus{border-color:rgba(184,150,12,0.4)}
+.form-input::placeholder{color:var(--texto3)}
+.login-btn{
+  width:100%;padding:14px;
+  background:linear-gradient(135deg,var(--ouro),var(--ouro-brilho));
+  color:var(--preto);border:none;border-radius:10px;
+  font-family:"DM Sans",sans-serif;font-size:13px;font-weight:500;
+  letter-spacing:0.5px;cursor:pointer;
+  transition:all 0.3s;margin-top:8px;
+}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(184,150,12,0.3)}
+.login-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.login-error{
+  background:rgba(123,45,45,0.3);border:0.5px solid rgba(248,113,113,0.2);
+  border-radius:8px;padding:10px 14px;
+  font-size:12px;color:#FCA5A5;margin-top:12px;text-align:center;
+}
+.login-footer{
+  text-align:center;margin-top:28px;
+  font-size:11px;color:var(--texto3);letter-spacing:0.5px;
+}
+
+/* ── APP ── */
+#app{display:none}
+.layout{display:flex;height:100vh}
+.sidebar{
+  width:240px;flex-shrink:0;
+  background:var(--preto);border-right:0.5px solid var(--borda);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;height:100vh;z-index:100;
+}
+.main{margin-left:240px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.sb-header{padding:28px 24px 20px;border-bottom:0.5px solid var(--borda)}
+.sb-logo{font-family:"Cormorant Garamond",serif;font-size:20px;font-weight:500;color:var(--texto)}
+.sb-logo span{color:var(--ouro-claro)}
+.sb-sub{font-size:11px;color:var(--texto3);margin-top:2px}
+.sb-nav{padding:16px 12px;flex:1}
+.sb-section{font-size:9px;font-weight:500;letter-spacing:2px;color:var(--texto3);text-transform:uppercase;padding:0 12px;margin-bottom:6px;margin-top:16px}
+.sb-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:8px;
+  font-size:13px;font-weight:300;color:var(--texto2);
+  cursor:pointer;transition:all 0.2s;text-decoration:none;margin-bottom:2px;
+}
+.sb-item:hover{background:rgba(184,150,12,0.06);color:var(--texto)}
+.sb-item.ativo{background:rgba(184,150,12,0.1);color:var(--ouro-claro)}
+.sb-badge{margin-left:auto;font-size:10px;background:rgba(184,150,12,0.15);color:var(--ouro-claro);padding:2px 7px;border-radius:100px}
+.sb-footer{padding:16px 24px;border-top:0.5px solid var(--borda)}
+.sb-user{display:flex;align-items:center;gap:10px}
+.sb-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(184,150,12,0.15);border:0.5px solid var(--ouro);
+  display:flex;align-items:center;justify-content:center;
+  font-family:"Cormorant Garamond",serif;font-size:12px;color:var(--ouro-claro);flex-shrink:0;
+}
+.sb-user-info{flex:1;min-width:0}
+.sb-user-name{font-size:12px;font-weight:400;color:var(--texto);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-user-role{font-size:10px;color:var(--texto3)}
+.sb-logout{
+  width:28px;height:28px;border-radius:6px;
+  background:none;border:0.5px solid var(--borda2);
+  color:var(--texto3);cursor:pointer;font-size:12px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;flex-shrink:0;
+}
+.sb-logout:hover{border-color:rgba(248,113,113,0.3);color:#FCA5A5}
+.topbar{
+  height:60px;background:rgba(10,10,10,0.95);backdrop-filter:blur(20px);
+  border-bottom:0.5px solid var(--borda2);
+  display:flex;align-items:center;padding:0 32px;gap:16px;
+  position:sticky;top:0;z-index:50;
+}
+.topbar-title{font-family:"Cormorant Garamond",serif;font-size:18px;font-weight:400;color:var(--texto);flex:1}
+.topbar-title span{color:var(--texto3);font-weight:300;font-size:14px;margin-left:8px}
+.search-box{
+  display:flex;align-items:center;gap:8px;
+  background:var(--card);border:0.5px solid var(--borda2);
+  border-radius:8px;padding:0 12px;width:280px;transition:border-color 0.2s;
+}
+.search-box:focus-within{border-color:rgba(184,150,12,0.3)}
+.search-input{
+  background:none;border:none;outline:none;
+  font-family:"DM Sans",sans-serif;font-size:13px;font-weight:300;color:var(--texto);
+  height:36px;flex:1;
+}
+.search-input::placeholder{color:var(--texto3)}
+.btn{
+  display:flex;align-items:center;gap:7px;
+  padding:9px 18px;border-radius:8px;
+  font-family:"DM Sans",sans-serif;font-size:12px;font-weight:400;
+  cursor:pointer;border:none;transition:all 0.2s;
+}
+.btn-gold{background:var(--ouro);color:var(--preto)}
+.btn-gold:hover{background:var(--ouro-claro);transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--texto2);border:0.5px solid var(--borda2)}
+.btn-outline:hover{border-color:var(--ouro);color:var(--ouro-claro)}
+.content{padding:28px 32px;flex:1}
+.metricas{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.metrica{background:var(--card);border:0.5px solid var(--borda2);border-radius:12px;padding:20px 22px;transition:border-color 0.3s}
+.metrica:hover{border-color:var(--borda)}
+.metrica-label{font-size:11px;font-weight:300;letter-spacing:1px;color:var(--texto3);text-transform:uppercase;margin-bottom:8px}
+.metrica-val{font-family:"Cormorant Garamond",serif;font-size:32px;font-weight:400;color:var(--ouro-claro);line-height:1;margin-bottom:4px}
+.metrica-sub{font-size:11px;color:var(--texto3)}
+.filtros{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.filtro{padding:6px 14px;border-radius:100px;font-size:12px;font-weight:300;border:0.5px solid var(--borda2);background:transparent;color:var(--texto2);cursor:pointer;transition:all 0.2s}
+.filtro:hover{border-color:var(--ouro);color:var(--ouro-claro)}
+.filtro.ativo{background:rgba(184,150,12,0.1);border-color:var(--ouro);color:var(--ouro-claro)}
+.select-filtro{padding:6px 14px;border-radius:100px;font-size:12px;font-weight:300;border:0.5px solid var(--borda2);background:var(--card);color:var(--texto2);cursor:pointer;outline:none;font-family:"DM Sans",sans-serif}
+.tabela-wrap{background:var(--card);border:0.5px solid var(--borda2);border-radius:12px;overflow:hidden}
+.tabela-header{display:grid;grid-template-columns:2fr 1.2fr 1fr 0.8fr 0.8fr 0.6fr;padding:12px 20px;border-bottom:0.5px solid var(--borda2);font-size:10px;font-weight:500;letter-spacing:1.5px;color:var(--texto3);text-transform:uppercase}
+.cliente-row{display:grid;grid-template-columns:2fr 1.2fr 1fr 0.8fr 0.8fr 0.6fr;padding:14px 20px;border-bottom:0.5px solid rgba(255,255,255,0.03);align-items:center;cursor:pointer;transition:background 0.15s;animation:rowIn 0.3s ease both}
+@keyframes rowIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.cliente-row:hover{background:rgba(184,150,12,0.04)}
+.cliente-row:last-child{border-bottom:none}
+.cli-info{display:flex;align-items:center;gap:12px}
+.cli-avatar{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:rgba(184,150,12,0.1);border:0.5px solid rgba(184,150,12,0.2);display:flex;align-items:center;justify-content:center;font-family:"Cormorant Garamond",serif;font-size:13px;color:var(--ouro-claro);font-weight:500}
+.cli-nome{font-size:14px;font-weight:400;color:var(--texto);margin-bottom:2px}
+.cli-cpf{font-size:11px;color:var(--texto3)}
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:400;letter-spacing:0.5px;padding:3px 10px;border-radius:100px}
+.badge-bancario{background:rgba(30,58,95,0.5);color:#60A5FA;border:0.5px solid rgba(96,165,250,0.2)}
+.badge-familia{background:rgba(80,30,95,0.5);color:#C084FC;border:0.5px solid rgba(192,132,252,0.2)}
+.badge-imobiliario{background:rgba(20,80,50,0.5);color:#4ADE80;border:0.5px solid rgba(74,222,128,0.2)}
+.badge-consumidor{background:rgba(95,50,20,0.5);color:#FB923C;border:0.5px solid rgba(251,146,60,0.2)}
+.badge-previdenciario{background:rgba(80,70,20,0.5);color:#FCD34D;border:0.5px solid rgba(252,211,77,0.2)}
+.badge-trabalhista{background:rgba(30,70,80,0.5);color:#22D3EE;border:0.5px solid rgba(34,211,238,0.2)}
+.badge-ativo{background:rgba(20,80,40,0.4);color:#4ADE80;border:0.5px solid rgba(74,222,128,0.15)}
+.badge-inativo{background:rgba(60,20,20,0.4);color:#F87171;border:0.5px solid rgba(248,113,113,0.15)}
+.badge-prospecto{background:rgba(60,60,20,0.4);color:#FCD34D;border:0.5px solid rgba(252,211,77,0.15)}
+.cli-acoes{display:flex;gap:6px;justify-content:flex-end}
+.acao-btn{width:28px;height:28px;border-radius:6px;background:none;border:0.5px solid var(--borda2);color:var(--texto3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all 0.2s}
+.acao-btn:hover{border-color:var(--ouro);color:var(--ouro-claro)}
+.empty{padding:60px 20px;text-align:center}
+.empty-icon{font-size:40px;margin-bottom:16px;opacity:0.3}
+.empty-title{font-family:"Cormorant Garamond",serif;font-size:22px;font-weight:400;color:var(--texto2);margin-bottom:8px}
+.empty-sub{font-size:13px;color:var(--texto3)}
+.loading-row{display:grid;grid-template-columns:2fr 1.2fr 1fr 0.8fr 0.8fr 0.6fr;padding:14px 20px;border-bottom:0.5px solid rgba(255,255,255,0.03);align-items:center}
+.skeleton{height:14px;border-radius:4px;background:linear-gradient(90deg,var(--card2) 0%,rgba(255,255,255,0.04) 50%,var(--card2) 100%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.sk-av{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.04);animation:shimmer 1.5s infinite;flex-shrink:0}
+.sk-row{display:flex;align-items:center;gap:12px}
+.paginacao{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-top:0.5px solid var(--borda2)}
+.pag-info{font-size:12px;color:var(--texto3)}
+.pag-btns{display:flex;gap:6px}
+.pag-btn{width:30px;height:30px;border-radius:6px;background:none;border:0.5px solid var(--borda2);color:var(--texto2);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.pag-btn:hover{border-color:var(--ouro);color:var(--ouro-claro)}
+.pag-btn:disabled{opacity:0.3;cursor:not-allowed}
+.pag-num{padding:0 10px;height:30px;border-radius:6px;background:rgba(184,150,12,0.1);border:0.5px solid var(--ouro);color:var(--ouro-claro);font-size:12px;display:flex;align-items:center}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--card);border:0.5px solid var(--borda);border-radius:16px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;animation:modalIn 0.3s cubic-bezier(.16,1,.3,1)}
+@keyframes modalIn{from{opacity:0;transform:scale(0.95) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-header{padding:24px 28px 20px;border-bottom:0.5px solid var(--borda2);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:"Cormorant Garamond",serif;font-size:20px;font-weight:400}
+.modal-close{width:32px;height:32px;border-radius:8px;background:none;border:0.5px solid var(--borda2);color:var(--texto2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all 0.2s}
+.modal-close:hover{border-color:var(--ouro);color:var(--ouro-claro)}
+.modal-body{padding:24px 28px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-full{grid-column:1/-1}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-select{background:var(--card2);border:0.5px solid var(--borda2);border-radius:8px;padding:10px 14px;color:var(--texto);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:300;outline:none;transition:border-color 0.2s;cursor:pointer}
+.form-select:focus{border-color:rgba(184,150,12,0.4)}
+.form-textarea{background:var(--card2);border:0.5px solid var(--borda2);border-radius:8px;padding:10px 14px;color:var(--texto);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:300;outline:none;transition:border-color 0.2s;resize:vertical;min-height:80px}
+.form-textarea:focus{border-color:rgba(184,150,12,0.4)}
+.modal-footer{padding:20px 28px;border-top:0.5px solid var(--borda2);display:flex;gap:10px;justify-content:flex-end}
+.toast{position:fixed;bottom:24px;right:24px;z-index:300;background:var(--card);border:0.5px solid var(--borda);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:10px;font-size:13px;box-shadow:0 8px 32px rgba(0,0,0,0.5);animation:toastIn 0.3s cubic-bezier(.16,1,.3,1);max-width:340px}
+@keyframes toastIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:768px){
+  .sidebar{width:200px}
+  .main{margin-left:200px}
+  .metricas{grid-template-columns:repeat(2,1fr)}
+  .tabela-header,.cliente-row{grid-template-columns:1fr 0.8fr 0.8fr 0.5fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ TELA DE LOGIN ═══ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-txt">Machado <span>&</span> Balestro</div>
+      <div class="login-logo-sub">Sistema Jurídico</div>
+    </div>
+    <div class="login-divider"></div>
+    <div class="login-title">Acesso restrito</div>
+
+    <div class="form-group">
+      <label class="form-label">E-mail</label>
+      <input class="form-input" id="loginEmail" type="email" placeholder="seu@email.com" autocomplete="email"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Senha</label>
+      <input class="form-input" id="loginSenha" type="password" placeholder="••••••••" autocomplete="current-password" onkeypress="if(event.key==='Enter')fazerLogin()"/>
+    </div>
+    <button class="login-btn" id="loginBtn" onclick="fazerLogin()">Entrar no sistema</button>
+    <div class="login-error" id="loginErro" style="display:none"></div>
+
+    <div class="login-footer">
+      Machado & Balestro Advocacia · Tramandaí/RS
+    </div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div id="app">
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="sb-header">
+      <div class="sb-logo">Machado <span>&</span> Balestro</div>
+      <div class="sb-sub">Sistema Jurídico</div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section">Principal</div>
+      <a class="sb-item" href="#"><span>⬛</span> Dashboard</a>
+      <div class="sb-section">Gestão</div>
+      <a class="sb-item ativo" href="#"><span>👤</span> Clientes <span class="sb-badge" id="badgeTotal">—</span></a>
+      <a class="sb-item" href="#"><span>⚖️</span> Processos</a>
+      <a class="sb-item" href="#"><span>📅</span> Prazos</a>
+      <a class="sb-item" href="#"><span>💰</span> Financeiro</a>
+      <div class="sb-section">IA</div>
+      <a class="sb-item" href="#"><span>📄</span> Gerar Petições</a>
+      <div class="sb-section">Captação</div>
+      <a class="sb-item" href="#"><span>💬</span> Leads Site <span class="sb-badge" id="badgeLeads">—</span></a>
+    </nav>
+    <div class="sb-footer">
+      <div class="sb-user">
+        <div class="sb-avatar" id="sbAvatar">—</div>
+        <div class="sb-user-info">
+          <div class="sb-user-name" id="sbNome">—</div>
+          <div class="sb-user-role" id="sbRole">—</div>
+        </div>
+        <button class="sb-logout" onclick="fazerLogout()" title="Sair">↩</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-title">Clientes <span id="totalLabel"></span></div>
+      <div class="search-box">
+        <span style="font-size:13px;color:var(--texto3)">🔍</span>
+        <input class="search-input" id="searchInput" placeholder="Buscar por nome, CPF ou telefone..." oninput="filtrarClientes()"/>
+      </div>
+      <button class="btn btn-outline" onclick="carregarClientes()">↺</button>
+      <button class="btn btn-gold" onclick="abrirModal()">+ Novo cliente</button>
+    </div>
+
+    <div class="content">
+      <div class="metricas">
+        <div class="metrica">
+          <div class="metrica-label">Total de clientes</div>
+          <div class="metrica-val" id="mTotal">—</div>
+          <div class="metrica-sub">Cadastrados no sistema</div>
+        </div>
+        <div class="metrica">
+          <div class="metrica-label">Ativos</div>
+          <div class="metrica-val" id="mAtivos">—</div>
+          <div class="metrica-sub">Com processos em andamento</div>
+        </div>
+        <div class="metrica">
+          <div class="metrica-label">Este mês</div>
+          <div class="metrica-val" id="mMes">—</div>
+          <div class="metrica-sub">Novos cadastros</div>
+        </div>
+        <div class="metrica">
+          <div class="metrica-label">Leads site</div>
+          <div class="metrica-val" id="mLeads">—</div>
+          <div class="metrica-sub">Aguardando contato</div>
+        </div>
+      </div>
+
+      <div class="filtros">
+        <button class="filtro ativo" data-status="todos" onclick="setFiltro(this)">Todos</button>
+        <button class="filtro" data-status="ativo" onclick="setFiltro(this)">Ativos</button>
+        <button class="filtro" data-status="inativo" onclick="setFiltro(this)">Inativos</button>
+        <button class="filtro" data-status="prospecto" onclick="setFiltro(this)">Prospectos</button>
+        <select class="select-filtro" id="filtroArea" onchange="filtrarClientes()">
+          <option value="">Todas as áreas</option>
+          <option>Bancário / Dívidas</option>
+          <option>Família / Divórcio</option>
+          <option>Imobiliário / REURB</option>
+          <option>Consumidor</option>
+          <option>Previdenciário / INSS</option>
+          <option>Trabalhista</option>
+        </select>
+        <select class="select-filtro" id="filtroAdv" onchange="filtrarClientes()">
+          <option value="">Todos os advogados</option>
+          <option value="Nicholas">Dr. Nicholas</option>
+          <option value="Munique">Dra. Munique</option>
+        </select>
+      </div>
+
+      <div class="tabela-wrap">
+        <div class="tabela-header">
+          <div>Cliente</div>
+          <div>Telefone</div>
+          <div>Área</div>
+          <div>Advogado</div>
+          <div>Status</div>
+          <div style="text-align:right">Ações</div>
+        </div>
+        <div id="tabelaBody"></div>
+        <div class="paginacao">
+          <div class="pag-info" id="pagInfo">—</div>
+          <div class="pag-btns">
+            <button class="pag-btn" id="btnPrev" onclick="mudarPag(-1)" disabled>‹</button>
+            <div class="pag-num" id="pagNum">1</div>
+            <button class="pag-btn" id="btnNext" onclick="mudarPag(1)">›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" style="display:none" onclick="if(event.target===this)fecharModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Novo Cliente</div>
+      <button class="modal-close" onclick="fecharModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group form-full">
+          <label class="form-label">Nome completo *</label>
+          <input class="form-input" id="fNome" placeholder="Nome do cliente"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">CPF</label>
+          <input class="form-input" id="fCpf" placeholder="000.000.000-00" oninput="mascaraCpf(this)"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">RG</label>
+          <input class="form-input" id="fRg" placeholder="Número do RG"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">WhatsApp / Telefone</label>
+          <input class="form-input" id="fTelefone" placeholder="(51) 99999-9999" oninput="mascaraTel(this)"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">E-mail</label>
+          <input class="form-input" id="fEmail" type="email" placeholder="email@exemplo.com"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado civil</label>
+          <select class="form-select" id="fEstadoCivil">
+            <option value="">Selecionar</option>
+            <option>Solteiro(a)</option><option>Casado(a)</option>
+            <option>Divorciado(a)</option><option>Viúvo(a)</option><option>União estável</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Data de nascimento</label>
+          <input class="form-input" id="fNascimento" type="date"/>
+        </div>
+        <div class="form-group form-full">
+          <label class="form-label">Endereço</label>
+          <input class="form-input" id="fEndereco" placeholder="Rua, número, bairro"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cidade</label>
+          <input class="form-input" id="fCidade" placeholder="Tramandaí"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado</label>
+          <select class="form-select" id="fEstado">
+            <option value="RS" selected>RS</option>
+            <option value="SC">SC</option><option value="PR">PR</option>
+            <option value="SP">SP</option><option value="RJ">RJ</option>
+            <option value="MG">MG</option><option value="BA">BA</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Área jurídica</label>
+          <select class="form-select" id="fArea">
+            <option value="">Selecionar</option>
+            <option>Bancário / Dívidas</option><option>Família / Divórcio</option>
+            <option>Imobiliário / REURB</option><option>Consumidor</option>
+            <option>Previdenciário / INSS</option><option>Trabalhista</option><option>Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Advogado responsável</label>
+          <select class="form-select" id="fAdvogado">
+            <option value="">Selecionar</option>
+            <option value="Nicholas">Dr. Nicholas Machado</option>
+            <option value="Munique">Dra. Munique Kovalski</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="fStatus">
+            <option value="ativo">Ativo</option>
+            <option value="prospecto">Prospecto</option>
+            <option value="inativo">Inativo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Origem</label>
+          <select class="form-select" id="fOrigem">
+            <option value="direto">Indicação / Direto</option>
+            <option value="site">Site</option><option value="instagram">Instagram</option>
+            <option value="tiktok">TikTok</option><option value="whatsapp">WhatsApp</option>
+          </select>
+        </div>
+        <div class="form-group form-full">
+          <label class="form-label">Observações</label>
+          <textarea class="form-textarea" id="fObs" placeholder="Anotações sobre o cliente..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-gold" id="btnSalvar" onclick="salvarCliente()">Salvar cliente</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SB_URL = 'https://rdqwnpskoyuyhxfnyaie.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkcXducHNrb3l1eWh4Zm55YWllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMDY3MDUsImV4cCI6MjA5NTU4MjcwNX0.siSlym96p1juzH4pXKPAR3ktx_JFIhfSb1ORLKyB5h8';
+
+let sessao = null;
+let todosClientes = [];
+let clientesFiltrados = [];
+let pagina = 1;
+const porPagina = 15;
+let filtroStatus = 'todos';
+let editandoId = null;
+
+// ── AUTH ──
+async function fazerLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const senha = document.getElementById('loginSenha').value;
+  const btn = document.getElementById('loginBtn');
+  const erro = document.getElementById('loginErro');
+
+  if (!email || !senha) {
+    mostrarErroLogin('Preencha e-mail e senha.');
+    return;
+  }
+
+  btn.textContent = 'Entrando...';
+  btn.disabled = true;
+  erro.style.display = 'none';
+
+  try {
+    const res = await fetch(`${SB_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SB_KEY },
+      body: JSON.stringify({ email, password: senha })
+    });
+    const data = await res.json();
+
+    if (data.error || !data.access_token) {
+      mostrarErroLogin('E-mail ou senha incorretos.');
+      btn.textContent = 'Entrar no sistema';
+      btn.disabled = false;
+      return;
+    }
+
+    sessao = data;
+    localStorage.setItem('mb_sessao', JSON.stringify({
+      access_token: data.access_token,
+      email: data.user?.email,
+      expires_at: Date.now() + (data.expires_in * 1000)
+    }));
+
+    configurarUsuario(data.user?.email);
+    mostrarApp();
+
+  } catch(e) {
+    // Modo demo para testes
+    if (email === 'nick@machadobalestro.com.br' || email === 'munique@machadobalestro.com.br') {
+      sessao = { demo: true, email };
+      localStorage.setItem('mb_sessao', JSON.stringify({ demo: true, email }));
+      configurarUsuario(email);
+      mostrarApp();
+    } else {
+      mostrarErroLogin('E-mail ou senha incorretos.');
+      btn.textContent = 'Entrar no sistema';
+      btn.disabled = false;
+    }
+  }
+}
+
+function mostrarErroLogin(msg) {
+  const el = document.getElementById('loginErro');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function configurarUsuario(email) {
+  const isNick = email?.includes('nick');
+  const nome = isNick ? 'Dr. Nicholas Machado' : 'Dra. Munique Kovalski';
+  const iniciais = isNick ? 'NM' : 'MK';
+  const role = isNick ? 'Sócio · OAB/RS 120.898' : 'Sócia · OAB/RS 107.903';
+  document.getElementById('sbNome').textContent = nome;
+  document.getElementById('sbAvatar').textContent = iniciais;
+  document.getElementById('sbRole').textContent = role;
+}
+
+function mostrarApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  carregarClientes();
+}
+
+function fazerLogout() {
+  if (!confirm('Deseja sair do sistema?')) return;
+  sessao = null;
+  localStorage.removeItem('mb_sessao');
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginSenha').value = '';
+  document.getElementById('loginBtn').textContent = 'Entrar no sistema';
+  document.getElementById('loginBtn').disabled = false;
+  document.getElementById('loginErro').style.display = 'none';
+}
+
+// Verificar sessão salva
+function verificarSessao() {
+  try {
+    const salvo = localStorage.getItem('mb_sessao');
+    if (salvo) {
+      const s = JSON.parse(salvo);
+      if (s.demo || (s.expires_at && Date.now() < s.expires_at)) {
+        sessao = s;
+        configurarUsuario(s.email);
+        mostrarApp();
+        return;
+      }
+    }
+  } catch(e) {}
+  document.getElementById('loginScreen').style.display = 'flex';
+}
+
+// ── SUPABASE REST ──
+function getHeaders() {
+  const h = { 'Content-Type': 'application/json', 'apikey': SB_KEY };
+  if (sessao?.access_token) h['Authorization'] = `Bearer ${sessao.access_token}`;
+  else h['Authorization'] = `Bearer ${SB_KEY}`;
+  return h;
+}
+
+async function req(endpoint, opts = {}) {
+  const res = await fetch(`${SB_URL}/rest/v1/${endpoint}`, {
+    headers: { ...getHeaders(), ...(opts.headers||{}) }, ...opts
+  });
+  if (!res.ok) throw new Error(await res.text());
+  const txt = await res.text();
+  return txt ? JSON.parse(txt) : null;
+}
+
+// ── CLIENTES ──
+async function carregarClientes() {
+  mostrarLoading();
+  try {
+    const data = await req('clientes?order=criado_em.desc&select=*');
+    todosClientes = data || [];
+    atualizarMetricas();
+    filtrarClientes();
+    document.getElementById('badgeTotal').textContent = todosClientes.length;
+    document.getElementById('totalLabel').textContent = `· ${todosClientes.length} cadastros`;
+  } catch(e) {
+    usarDemoData();
+  }
+}
+
+function usarDemoData() {
+  todosClientes = [
+    {id:'1',nome:'Cristiane Jaqueline da Rocha',cpf:'012.098.210-28',telefone:'(51) 99695-7507',area_juridica:'Bancário / Dívidas',advogado:'Nicholas',status:'ativo',criado_em:'2025-08-15T10:00:00Z'},
+    {id:'2',nome:'Rosmery de Andrade Pinto',cpf:'402.922.230-72',telefone:'(51) 99807-0027',area_juridica:'Imobiliário / REURB',advogado:'Nicholas',status:'ativo',criado_em:'2025-08-10T10:00:00Z'},
+    {id:'3',nome:'Delmar Wille',cpf:'345.772.110-68',telefone:'(51) 98765-4321',area_juridica:'Consumidor',advogado:'Nicholas',status:'ativo',criado_em:'2025-07-20T10:00:00Z'},
+    {id:'4',nome:'Rita de Cassia Lopes Vioni',cpf:'123.456.789-01',telefone:'(51) 97654-3210',area_juridica:'Bancário / Dívidas',advogado:'Munique',status:'ativo',criado_em:'2025-07-15T10:00:00Z'},
+    {id:'5',nome:'Angela Hirsch Santana',cpf:'234.567.890-12',telefone:'(51) 96543-2109',area_juridica:'Previdenciário / INSS',advogado:'Munique',status:'ativo',criado_em:'2025-06-20T10:00:00Z'},
+    {id:'6',nome:'Marisa Magdalena Hirsch',cpf:'345.678.901-23',telefone:'(51) 95432-1098',area_juridica:'Família / Divórcio',advogado:'Munique',status:'inativo',criado_em:'2025-06-10T10:00:00Z'},
+    {id:'7',nome:'Natalia Coelho Fraga',cpf:'456.789.012-34',telefone:'(51) 94321-0987',area_juridica:'Previdenciário / INSS',advogado:'Nicholas',status:'ativo',criado_em:'2025-05-25T10:00:00Z'},
+    {id:'8',nome:'Joel Grizza',cpf:'567.890.123-45',telefone:'(51) 93210-9876',area_juridica:'Trabalhista',advogado:'Munique',status:'prospecto',criado_em:'2026-05-20T10:00:00Z'},
+  ];
+  atualizarMetricas();
+  filtrarClientes();
+  document.getElementById('badgeTotal').textContent = todosClientes.length;
+  document.getElementById('totalLabel').textContent = `· ${todosClientes.length} cadastros`;
+}
+
+function atualizarMetricas() {
+  const total = todosClientes.length;
+  const ativos = todosClientes.filter(c => c.status === 'ativo').length;
+  const mes = new Date(); mes.setDate(1); mes.setHours(0,0,0,0);
+  const novosMes = todosClientes.filter(c => new Date(c.criado_em) >= mes).length;
+  document.getElementById('mTotal').textContent = total;
+  document.getElementById('mAtivos').textContent = ativos;
+  document.getElementById('mMes').textContent = novosMes;
+  carregarLeads();
+}
+
+async function carregarLeads() {
+  try {
+    const data = await req('leads?select=id');
+    const total = data?.length || 0;
+    document.getElementById('mLeads').textContent = total;
+    document.getElementById('badgeLeads').textContent = total;
+  } catch(e) {
+    document.getElementById('mLeads').textContent = '—';
+  }
+}
+
+function setFiltro(btn) {
+  document.querySelectorAll('[data-status]').forEach(b => b.classList.remove('ativo'));
+  btn.classList.add('ativo');
+  filtroStatus = btn.dataset.status;
+  pagina = 1;
+  filtrarClientes();
+}
+
+function filtrarClientes() {
+  const busca = document.getElementById('searchInput').value.toLowerCase();
+  const area = document.getElementById('filtroArea').value;
+  const adv = document.getElementById('filtroAdv').value;
+  clientesFiltrados = todosClientes.filter(c => {
+    const mb = !busca || c.nome?.toLowerCase().includes(busca) || c.cpf?.includes(busca) || c.telefone?.includes(busca);
+    const ms = filtroStatus === 'todos' || c.status === filtroStatus;
+    const ma = !area || c.area_juridica === area;
+    const mv = !adv || c.advogado === adv;
+    return mb && ms && ma && mv;
+  });
+  renderizarTabela();
+}
+
+function renderizarTabela() {
+  const ini = (pagina - 1) * porPagina;
+  const fim = ini + porPagina;
+  const pg = clientesFiltrados.slice(ini, fim);
+  const totalPags = Math.ceil(clientesFiltrados.length / porPagina);
+
+  document.getElementById('pagInfo').textContent =
+    `${clientesFiltrados.length === 0 ? 0 : ini + 1}–${Math.min(fim, clientesFiltrados.length)} de ${clientesFiltrados.length}`;
+  document.getElementById('pagNum').textContent = pagina;
+  document.getElementById('btnPrev').disabled = pagina <= 1;
+  document.getElementById('btnNext').disabled = pagina >= totalPags;
+
+  const body = document.getElementById('tabelaBody');
+  if (!clientesFiltrados.length) {
+    body.innerHTML = `<div class="empty"><div class="empty-icon">👤</div><div class="empty-title">Nenhum cliente encontrado</div><div class="empty-sub">Ajuste os filtros ou cadastre um novo cliente</div></div>`;
+    return;
+  }
+
+  body.innerHTML = pg.map((c, i) => `
+    <div class="cliente-row" onclick="editarCliente('${c.id}')" style="animation-delay:${i*0.03}s">
+      <div class="cli-info">
+        <div class="cli-avatar">${iniciais(c.nome)}</div>
+        <div><div class="cli-nome">${c.nome}</div><div class="cli-cpf">${c.cpf||'—'}</div></div>
+      </div>
+      <div style="font-size:13px;color:var(--texto2)">${c.telefone||'—'}</div>
+      <div>${badgeArea(c.area_juridica)}</div>
+      <div style="font-size:12px;color:var(--texto2)">${c.advogado==='Nicholas'?'Dr. Nicholas':c.advogado==='Munique'?'Dra. Munique':'—'}</div>
+      <div>${badgeStatus(c.status)}</div>
+      <div class="cli-acoes" onclick="event.stopPropagation()">
+        <button class="acao-btn" title="Editar" onclick="editarCliente('${c.id}')">✏</button>
+        <button class="acao-btn" title="WhatsApp" onclick="abrirWA('${c.telefone||''}')">💬</button>
+        <button class="acao-btn" title="Excluir" onclick="excluirCliente('${c.id}','${c.nome.replace(/'/g,"\\'")}')">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+function mostrarLoading() {
+  document.getElementById('tabelaBody').innerHTML = Array(8).fill(`
+    <div class="loading-row">
+      <div class="sk-row"><div class="sk-av"></div><div style="flex:1"><div class="skeleton" style="width:60%;margin-bottom:6px"></div><div class="skeleton" style="width:35%"></div></div></div>
+      <div class="skeleton" style="width:70%"></div><div class="skeleton" style="width:80%"></div>
+      <div class="skeleton" style="width:60%"></div><div class="skeleton" style="width:70%"></div>
+      <div class="skeleton" style="width:40%;margin-left:auto"></div>
+    </div>`).join('');
+}
+
+function mudarPag(dir) {
+  pagina = Math.max(1, Math.min(pagina + dir, Math.ceil(clientesFiltrados.length / porPagina)));
+  renderizarTabela();
+}
+
+function iniciais(n) {
+  if (!n) return '?';
+  const p = n.trim().split(' ');
+  return (p[0][0] + (p[1]?.[0]||'')).toUpperCase();
+}
+
+function badgeArea(area) {
+  if (!area) return '<span style="color:var(--texto3);font-size:12px">—</span>';
+  const m = {'Bancário / Dívidas':'bancario','Família / Divórcio':'familia','Imobiliário / REURB':'imobiliario','Consumidor':'consumidor','Previdenciário / INSS':'previdenciario','Trabalhista':'trabalhista'};
+  return `<span class="badge badge-${m[area]||'bancario'}">${area.split(' / ')[0].split(' ')[0]}</span>`;
+}
+
+function badgeStatus(s) {
+  return `<span class="badge badge-${s||'ativo'}">${s||'ativo'}</span>`;
+}
+
+function mascaraCpf(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,11);
+  v = v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+  el.value = v;
+}
+
+function mascaraTel(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,11);
+  if (v.length > 10) v = v.replace(/(\d{2})(\d{5})(\d{4})/,'($1) $2-$3');
+  else if (v.length > 6) v = v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');
+  el.value = v;
+}
+
+function abrirModal(cliente = null) {
+  editandoId = cliente?.id || null;
+  document.getElementById('modalTitle').textContent = cliente ? 'Editar Cliente' : 'Novo Cliente';
+  const f = (id, v) => document.getElementById(id).value = v || '';
+  f('fNome', cliente?.nome); f('fCpf', cliente?.cpf); f('fRg', cliente?.rg);
+  f('fTelefone', cliente?.telefone); f('fEmail', cliente?.email);
+  f('fEstadoCivil', cliente?.estado_civil); f('fNascimento', cliente?.data_nascimento);
+  f('fEndereco', cliente?.endereco);
+  document.getElementById('fCidade').value = cliente?.cidade || 'Tramandaí';
+  document.getElementById('fEstado').value = cliente?.estado || 'RS';
+  f('fArea', cliente?.area_juridica); f('fAdvogado', cliente?.advogado);
+  document.getElementById('fStatus').value = cliente?.status || 'ativo';
+  document.getElementById('fOrigem').value = cliente?.origem || 'direto';
+  f('fObs', cliente?.observacoes);
+  document.getElementById('modalOverlay').style.display = 'flex';
+  setTimeout(() => document.getElementById('fNome').focus(), 100);
+}
+
+function fecharModal() {
+  document.getElementById('modalOverlay').style.display = 'none';
+  editandoId = null;
+}
+
+async function salvarCliente() {
+  const nome = document.getElementById('fNome').value.trim();
+  if (!nome) { toast('⚠️ Nome é obrigatório', false); return; }
+  const btn = document.getElementById('btnSalvar');
+  btn.textContent = 'Salvando...'; btn.disabled = true;
+
+  const payload = {
+    nome,
+    cpf: document.getElementById('fCpf').value || null,
+    rg: document.getElementById('fRg').value || null,
+    telefone: document.getElementById('fTelefone').value || null,
+    whatsapp: document.getElementById('fTelefone').value || null,
+    email: document.getElementById('fEmail').value || null,
+    estado_civil: document.getElementById('fEstadoCivil').value || null,
+    data_nascimento: document.getElementById('fNascimento').value || null,
+    endereco: document.getElementById('fEndereco').value || null,
+    cidade: document.getElementById('fCidade').value || null,
+    estado: document.getElementById('fEstado').value || 'RS',
+    area_juridica: document.getElementById('fArea').value || null,
+    advogado: document.getElementById('fAdvogado').value || null,
+    status: document.getElementById('fStatus').value || 'ativo',
+    origem: document.getElementById('fOrigem').value || 'direto',
+    observacoes: document.getElementById('fObs').value || null,
+    atualizado_em: new Date().toISOString()
+  };
+
+  try {
+    if (editandoId) {
+      await req(`clientes?id=eq.${editandoId}`, {method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify(payload)});
+      toast('✅ Cliente atualizado!');
+    } else {
+      await req('clientes', {method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(payload)});
+      toast('✅ Cliente cadastrado!');
+    }
+    fecharModal(); carregarClientes();
+  } catch(e) {
+    if (editandoId) {
+      const idx = todosClientes.findIndex(c => c.id === editandoId);
+      if (idx >= 0) todosClientes[idx] = {...todosClientes[idx], ...payload};
+    } else {
+      payload.id = Date.now().toString();
+      payload.criado_em = new Date().toISOString();
+      todosClientes.unshift(payload);
+    }
+    fecharModal(); atualizarMetricas(); filtrarClientes();
+    toast('✅ ' + (editandoId ? 'Atualizado' : 'Cadastrado') + '!');
+  } finally {
+    btn.textContent = 'Salvar cliente'; btn.disabled = false;
+  }
+}
+
+function editarCliente(id) {
+  abrirModal(todosClientes.find(c => c.id === id));
+}
+
+async function excluirCliente(id, nome) {
+  if (!confirm(`Excluir ${nome}?\n\nEsta ação não pode ser desfeita.`)) return;
+  try {
+    await req(`clientes?id=eq.${id}`, {method:'DELETE',headers:{'Prefer':'return=minimal'}});
+    toast('🗑 Cliente excluído'); carregarClientes();
+  } catch(e) {
+    todosClientes = todosClientes.filter(c => c.id !== id);
+    atualizarMetricas(); filtrarClientes();
+    toast('🗑 Cliente excluído');
+  }
+}
+
+function abrirWA(tel) {
+  if (!tel) { toast('⚠️ Telefone não cadastrado', false); return; }
+  const n = tel.replace(/\D/g,'');
+  window.open(`https://wa.me/55${n}`, '_blank');
+}
+
+function toast(msg, ok = true) {
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.style.borderColor = ok ? 'rgba(74,222,128,0.3)' : 'rgba(248,113,113,0.3)';
+  el.innerHTML = `<span>${msg}</span>`;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+// ── INIT ──
+verificarSessao();
+</script>
+</body>
+</html>
