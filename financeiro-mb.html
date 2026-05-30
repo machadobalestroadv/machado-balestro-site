@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Financeiro — Machado & Balestro</title>
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --gold-dark: #A07830;
+    --bg: #0A0A0A;
+    --bg2: #111111;
+    --bg3: #1A1A1A;
+    --bg4: #222222;
+    --border: #2A2A2A;
+    --text: #F0F0F0;
+    --text2: #A0A0A0;
+    --green: #2ECC71;
+    --red: #E74C3C;
+    --yellow: #F39C12;
+    --blue: #3498DB;
+    --sidebar-w: 260px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width:var(--sidebar-w); min-height:100vh; background:var(--bg2);
+    border-right:1px solid var(--border); display:flex; flex-direction:column;
+    position:fixed; top:0; left:0; z-index:100;
+  }
+  .sidebar-logo {
+    padding:24px 20px; border-bottom:1px solid var(--border);
+    display:flex; align-items:center; gap:12px;
+  }
+  .sidebar-logo .logo-hex {
+    width:40px; height:40px; background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+    clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:900; font-size:14px; color:#000; flex-shrink:0;
+  }
+  .sidebar-logo .logo-text { line-height:1.2; }
+  .sidebar-logo .logo-text strong { font-size:13px; color:var(--gold); display:block; }
+  .sidebar-logo .logo-text span { font-size:10px; color:var(--text2); }
+  .sidebar-nav { flex:1; padding:16px 0; overflow-y:auto; }
+  .nav-section { padding:8px 20px 4px; font-size:10px; text-transform:uppercase;
+    letter-spacing:1.5px; color:var(--text2); margin-top:8px; }
+  .nav-item {
+    display:flex; align-items:center; gap:12px; padding:10px 20px;
+    color:var(--text2); cursor:pointer; transition:.2s; font-size:13px;
+    border-left:3px solid transparent; text-decoration:none;
+  }
+  .nav-item:hover { background:var(--bg3); color:var(--text); }
+  .nav-item.active { background:rgba(201,168,76,.1); color:var(--gold); border-left-color:var(--gold); }
+  .nav-item .icon { width:18px; text-align:center; flex-shrink:0; }
+  .sidebar-footer { padding:16px 20px; border-top:1px solid var(--border); font-size:11px; color:var(--text2); }
+
+  /* MAIN */
+  .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
+  .topbar {
+    background:var(--bg2); border-bottom:1px solid var(--border);
+    padding:16px 28px; display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:50;
+  }
+  .topbar h1 { font-size:18px; font-weight:700; color:var(--text); }
+  .topbar h1 span { color:var(--gold); }
+  .topbar-actions { display:flex; gap:10px; align-items:center; }
+  .content { padding:28px; flex:1; }
+
+  /* BUTTONS */
+  .btn {
+    padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600;
+    cursor:pointer; border:none; transition:.2s; display:inline-flex; align-items:center; gap:6px;
+  }
+  .btn-gold { background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:#000; }
+  .btn-gold:hover { filter:brightness(1.1); transform:translateY(-1px); }
+  .btn-outline { background:transparent; border:1px solid var(--border); color:var(--text2); }
+  .btn-outline:hover { border-color:var(--gold); color:var(--gold); }
+  .btn-green { background:rgba(46,204,113,.15); border:1px solid var(--green); color:var(--green); }
+  .btn-green:hover { background:rgba(46,204,113,.25); }
+  .btn-red { background:rgba(231,76,60,.15); border:1px solid var(--red); color:var(--red); }
+  .btn-red:hover { background:rgba(231,76,60,.25); }
+  .btn-sm { padding:5px 10px; font-size:11px; }
+  .btn-icon { padding:8px; border-radius:8px; }
+
+  /* METRICS */
+  .metrics-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+  .metric-card {
+    background:var(--bg2); border:1px solid var(--border); border-radius:12px;
+    padding:20px; position:relative; overflow:hidden;
+  }
+  .metric-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  }
+  .metric-card.green::before { background:var(--green); }
+  .metric-card.gold::before { background:var(--gold); }
+  .metric-card.red::before { background:var(--red); }
+  .metric-card.blue::before { background:var(--blue); }
+  .metric-label { font-size:11px; color:var(--text2); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+  .metric-value { font-size:24px; font-weight:800; margin-bottom:4px; }
+  .metric-value.green { color:var(--green); }
+  .metric-value.gold { color:var(--gold); }
+  .metric-value.red { color:var(--red); }
+  .metric-value.blue { color:var(--blue); }
+  .metric-sub { font-size:11px; color:var(--text2); }
+  .metric-icon { position:absolute; top:16px; right:16px; font-size:24px; opacity:.3; }
+
+  /* CARDS / PANELS */
+  .panel { background:var(--bg2); border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:20px; }
+  .panel-header {
+    padding:16px 20px; border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .panel-title { font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px; }
+  .panel-title .dot { width:8px; height:8px; border-radius:50%; background:var(--gold); }
+  .panel-body { padding:20px; }
+
+  /* TABS */
+  .tabs { display:flex; gap:4px; background:var(--bg3); border-radius:10px; padding:4px; margin-bottom:24px; }
+  .tab {
+    flex:1; padding:8px 16px; border-radius:8px; cursor:pointer; font-size:13px;
+    font-weight:600; text-align:center; transition:.2s; color:var(--text2); border:none; background:transparent;
+  }
+  .tab.active { background:var(--bg2); color:var(--gold); box-shadow:0 2px 8px rgba(0,0,0,.3); }
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
+
+  /* TABLE */
+  .table-wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { padding:10px 14px; text-align:left; font-size:11px; text-transform:uppercase;
+    letter-spacing:1px; color:var(--text2); border-bottom:1px solid var(--border);
+    font-weight:600; white-space:nowrap; }
+  td { padding:12px 14px; border-bottom:1px solid rgba(255,255,255,.04); vertical-align:middle; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:rgba(255,255,255,.02); }
+  .td-actions { display:flex; gap:6px; }
+
+  /* BADGES */
+  .badge {
+    display:inline-flex; align-items:center; gap:4px;
+    padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600;
+  }
+  .badge-green { background:rgba(46,204,113,.15); color:var(--green); border:1px solid rgba(46,204,113,.3); }
+  .badge-red { background:rgba(231,76,60,.15); color:var(--red); border:1px solid rgba(231,76,60,.3); }
+  .badge-yellow { background:rgba(243,156,18,.15); color:var(--yellow); border:1px solid rgba(243,156,18,.3); }
+  .badge-blue { background:rgba(52,152,219,.15); color:var(--blue); border:1px solid rgba(52,152,219,.3); }
+  .badge-gray { background:rgba(160,160,160,.15); color:var(--text2); border:1px solid rgba(160,160,160,.3); }
+  .badge::before { content:''; width:6px; height:6px; border-radius:50%; background:currentColor; }
+
+  /* FORM / MODAL */
+  .modal-overlay {
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,.7);
+    z-index:1000; align-items:center; justify-content:center; padding:20px;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:var(--bg2); border:1px solid var(--border); border-radius:16px;
+    width:100%; max-width:560px; max-height:90vh; overflow-y:auto;
+  }
+  .modal-header {
+    padding:20px 24px; border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .modal-header h2 { font-size:16px; font-weight:700; }
+  .modal-close { background:none; border:none; color:var(--text2); cursor:pointer; font-size:20px; line-height:1; }
+  .modal-body { padding:24px; }
+  .modal-footer { padding:16px 24px; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end; }
+
+  .form-group { margin-bottom:16px; }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  label { display:block; font-size:12px; color:var(--text2); margin-bottom:6px; font-weight:600; text-transform:uppercase; letter-spacing:.5px; }
+  input, select, textarea {
+    width:100%; background:var(--bg3); border:1px solid var(--border); border-radius:8px;
+    padding:10px 14px; color:var(--text); font-size:13px; outline:none; transition:.2s;
+    font-family:inherit;
+  }
+  input:focus, select:focus, textarea:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,.1); }
+  select option { background:var(--bg3); }
+  textarea { resize:vertical; min-height:80px; }
+
+  /* SEARCH BAR */
+  .search-bar {
+    display:flex; gap:10px; margin-bottom:20px; align-items:center;
+  }
+  .search-input-wrap { position:relative; flex:1; }
+  .search-input-wrap input { padding-left:36px; }
+  .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text2); font-size:14px; pointer-events:none; }
+  .filter-select { width:160px; }
+
+  /* EMPTY STATE */
+  .empty-state { text-align:center; padding:48px 20px; color:var(--text2); }
+  .empty-state .icon { font-size:48px; margin-bottom:12px; opacity:.4; }
+  .empty-state h3 { font-size:16px; color:var(--text); margin-bottom:6px; }
+  .empty-state p { font-size:13px; }
+
+  /* ASAAS STATUS */
+  .asaas-status {
+    display:flex; align-items:center; gap:8px; padding:6px 14px;
+    border-radius:20px; font-size:12px; font-weight:600; border:1px solid;
+  }
+  .asaas-status.online { background:rgba(46,204,113,.1); color:var(--green); border-color:rgba(46,204,113,.3); }
+  .asaas-status.offline { background:rgba(231,76,60,.1); color:var(--red); border-color:rgba(231,76,60,.3); }
+  .asaas-status .dot { width:8px; height:8px; border-radius:50%; background:currentColor; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  /* LINK COPIADO TOAST */
+  .toast {
+    position:fixed; bottom:24px; right:24px; background:var(--bg3); border:1px solid var(--gold);
+    color:var(--text); padding:12px 20px; border-radius:10px; font-size:13px; font-weight:600;
+    z-index:9999; opacity:0; transform:translateY(10px); transition:.3s; pointer-events:none;
+  }
+  .toast.show { opacity:1; transform:translateY(0); }
+
+  /* PROGRESS BAR */
+  .progress-wrap { background:var(--bg3); border-radius:20px; height:6px; overflow:hidden; margin-top:6px; }
+  .progress-bar { height:100%; border-radius:20px; background:linear-gradient(90deg,var(--gold),var(--gold-light)); transition:.5s; }
+
+  /* RESPONSIVE */
+  @media(max-width:1100px) { .metrics-grid { grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:768px) {
+    .sidebar { transform:translateX(-100%); }
+    .main { margin-left:0; }
+    .form-row { grid-template-columns:1fr; }
+  }
+
+  /* LOADING SPINNER */
+  .spinner {
+    width:20px; height:20px; border:2px solid var(--border);
+    border-top-color:var(--gold); border-radius:50%; animation:spin .7s linear infinite; display:inline-block;
+  }
+  @keyframes spin { to{transform:rotate(360deg)} }
+
+  /* COBRANÇA CARD (mobile) */
+  .cob-amount { font-size:18px; font-weight:800; color:var(--gold); }
+
+  /* CHART BARS */
+  .chart-bars { display:flex; gap:8px; align-items:flex-end; height:100px; }
+  .bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .bar { width:100%; border-radius:4px 4px 0 0; background:linear-gradient(0deg,var(--gold-dark),var(--gold)); min-height:4px; transition:.5s; }
+  .bar-label { font-size:10px; color:var(--text2); }
+  .bar-val { font-size:10px; color:var(--gold); font-weight:700; }
+
+  /* SPLIT LAYOUT */
+  .split-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  @media(max-width:900px) { .split-2 { grid-template-columns:1fr; } }
+
+  /* ===== ALERTAS DOCS PENDENTES ===== */
+  .alertas-wrap { margin-bottom:20px; display:flex; flex-direction:column; gap:8px; }
+  .alerta-docs {
+    display:flex; align-items:center; gap:14px;
+    background:var(--bg2); border:1px solid rgba(243,156,18,.35);
+    border-left:4px solid var(--yellow); border-radius:10px;
+    padding:13px 16px; cursor:pointer; transition:.15s;
+  }
+  .alerta-docs:hover { background:var(--bg3); border-color:rgba(243,156,18,.6); }
+  .alerta-docs.urgente { border-left-color:var(--red); border-color:rgba(231,76,60,.35); }
+  .alerta-docs.urgente:hover { border-color:rgba(231,76,60,.6); }
+  .alerta-icon { font-size:20px; flex-shrink:0; }
+  .alerta-body { flex:1; min-width:0; }
+  .alerta-nome { font-size:13px; font-weight:700; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .alerta-detalhe { font-size:11px; color:var(--text2); margin-top:2px; }
+  .alerta-badge {
+    font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px;
+    white-space:nowrap; flex-shrink:0;
+  }
+  .alerta-badge.warn { background:rgba(243,156,18,.15); color:var(--yellow); border:1px solid rgba(243,156,18,.3); }
+  .alerta-badge.danger { background:rgba(231,76,60,.15); color:var(--red); border:1px solid rgba(231,76,60,.3); }
+  .alerta-dismiss { background:none; border:none; color:var(--text2); cursor:pointer; font-size:16px; flex-shrink:0; padding:0 4px; transition:.15s; }
+  .alerta-dismiss:hover { color:var(--text); }
+  .alertas-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .alertas-title { font-size:12px; font-weight:700; color:var(--yellow); text-transform:uppercase; letter-spacing:1px; display:flex; align-items:center; gap:6px; }
+  .alertas-title .pulse { width:8px; height:8px; border-radius:50%; background:var(--yellow); animation:pulse 1.5s infinite; }
+  .alertas-empty { display:none; align-items:center; gap:10px; background:rgba(46,204,113,.08); border:1px solid rgba(46,204,113,.2); border-radius:10px; padding:12px 16px; font-size:13px; color:var(--green); }
+  .alertas-empty.show { display:flex; }
+
+  /* ===== PIPELINE KANBAN ===== */
+  .pipeline-wrap { display:flex; flex-direction:column; }
+  .pipeline-controls { display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; align-items:center; }
+  .pipeline-search { position:relative; flex:1; min-width:180px; }
+  .pipeline-search input { width:100%; padding-left:34px; }
+  .pipeline-search .srch-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text2); pointer-events:none; }
+  .kanban-board { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; align-items:start; overflow-x:auto; padding-bottom:8px; }
+  .k-col { background:var(--bg3); border-radius:12px; padding:12px; min-width:170px; }
+  .k-col-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .k-col-title { display:flex; align-items:center; gap:7px; font-size:12px; font-weight:700; color:var(--text); }
+  .k-col-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .k-col-count { font-size:11px; background:var(--bg4); border:1px solid var(--border); border-radius:20px; padding:1px 8px; color:var(--text2); }
+  .k-col-total { font-size:11px; color:var(--text2); margin-bottom:10px; padding:0 2px; }
+  .k-cards { display:flex; flex-direction:column; gap:8px; }
+  .k-card { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:11px; cursor:pointer; transition:.15s; }
+  .k-card:hover { border-color:var(--gold); }
+  .k-card-top { display:flex; align-items:flex-start; gap:8px; margin-bottom:7px; }
+  .k-avatar { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; flex-shrink:0; }
+  .k-name { font-size:13px; font-weight:700; color:var(--text); line-height:1.3; }
+  .k-sub { font-size:11px; color:var(--text2); margin-top:1px; }
+  .k-obs { font-size:11px; color:var(--text2); margin:6px 0; padding-top:6px; border-top:1px solid var(--border); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .k-meta { display:flex; align-items:center; justify-content:space-between; gap:4px; flex-wrap:wrap; }
+  .k-val { font-size:12px; font-weight:700; }
+  .k-date { font-size:11px; color:var(--text2); }
+  .k-docs-alert { display:flex; align-items:center; gap:5px; margin:5px 0 0; background:rgba(243,156,18,.1); border:1px solid rgba(243,156,18,.3); border-radius:6px; padding:4px 8px; font-size:11px; color:var(--yellow); }
+  .k-move-btns { display:flex; gap:4px; margin-top:7px; }
+  .k-move-btn { flex:1; font-size:10px; padding:4px 0; background:transparent; border:1px solid var(--border); border-radius:6px; color:var(--text2); cursor:pointer; transition:.15s; }
+  .k-move-btn:hover { border-color:var(--gold); color:var(--gold); }
+  .k-add-btn { width:100%; margin-top:8px; font-size:12px; color:var(--text2); background:none; border:1px dashed var(--border); border-radius:8px; padding:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:5px; transition:.15s; }
+  .k-add-btn:hover { border-color:var(--gold); color:var(--gold); }
+  .k-empty { text-align:center; padding:24px 8px; color:var(--text2); font-size:12px; }
+  .k-badge { display:inline-flex; align-items:center; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:700; }
+
+  /* Pipeline métricas */
+  .pipe-metrics { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:20px; }
+  .pipe-mc { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:14px 16px; position:relative; overflow:hidden; }
+  .pipe-mc::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+  .pipe-mc.c0::before { background:#888780; }
+  .pipe-mc.c1::before { background:var(--blue); }
+  .pipe-mc.c2::before { background:var(--yellow); }
+  .pipe-mc.c3::before { background:#E74C3C; }
+  .pipe-mc.c4::before { background:var(--green); }
+  .pipe-mc-label { font-size:10px; color:var(--text2); text-transform:uppercase; letter-spacing:.8px; margin-bottom:5px; }
+  .pipe-mc-val { font-size:20px; font-weight:800; }
+  .pipe-mc-sub { font-size:11px; color:var(--text2); margin-top:3px; }
+
+  /* Modal pipeline */
+  .p-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:2000; align-items:center; justify-content:center; padding:20px; }
+  .p-modal-overlay.open { display:flex; }
+  .p-modal { background:var(--bg2); border:1px solid var(--border); border-radius:16px; width:100%; max-width:500px; max-height:90vh; overflow-y:auto; }
+  .p-modal-header { padding:18px 22px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+  .p-modal-header h2 { font-size:15px; font-weight:700; }
+  .p-modal-body { padding:22px; }
+  .p-modal-footer { padding:14px 22px; border-top:1px solid var(--border); display:flex; gap:8px; justify-content:flex-end; }
+  .docs-checklist { display:flex; flex-direction:column; gap:6px; margin-top:4px; }
+  .docs-checklist label { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text); cursor:pointer; }
+  .docs-checklist input[type=checkbox] { width:15px; height:15px; accent-color:var(--gold); flex-shrink:0; }
+  .docs-item-pending { color:var(--yellow); }
+  .docs-item-ok { color:var(--green); text-decoration:line-through; opacity:.6; }
+  @media(max-width:1100px) { .kanban-board { grid-template-columns:repeat(3,1fr); } .pipe-metrics { grid-template-columns:repeat(3,1fr); } }
+  @media(max-width:700px) { .kanban-board { grid-template-columns:repeat(2,1fr); } .pipe-metrics { grid-template-columns:repeat(2,1fr); } }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-hex">M&B</div>
+    <div class="logo-text">
+      <strong>Machado & Balestro</strong>
+      <span>Sistema Jurídico</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Menu</div>
+    <a href="sistema-mb.html" class="nav-item">
+      <span class="icon">⊞</span> Dashboard
+    </a>
+    <a href="sistema-mb.html#clientes" class="nav-item">
+      <span class="icon">👥</span> Clientes
+    </a>
+    <a href="sistema-mb.html#processos" class="nav-item">
+      <span class="icon">⚖️</span> Processos
+    </a>
+    <a href="sistema-mb.html#prazos" class="nav-item">
+      <span class="icon">📅</span> Prazos
+    </a>
+    <div class="nav-section">Financeiro</div>
+    <a href="#" class="nav-item active" onclick="showTab('cobranças')">
+      <span class="icon">💰</span> Cobranças
+    </a>
+    <a href="#" class="nav-item" onclick="showTab('recorrentes')">
+      <span class="icon">🔁</span> Recorrentes
+    </a>
+    <a href="#" class="nav-item" onclick="showTab('relatorios')">
+      <span class="icon">📊</span> Relatórios
+    </a>
+    <div class="nav-section">Captação</div>
+    <a href="#" class="nav-item" id="nav-pipeline" onclick="switchTabFull('pipeline',this)">
+      <span class="icon">🧲</span> Pipeline de Clientes
+    </a>
+    <div class="nav-section">Sistema</div>
+    <a href="sistema-mb.html#leads" class="nav-item">
+      <span class="icon">📥</span> Leads
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div style="margin-bottom:4px;font-weight:600;color:var(--text);">Dr. Nicholas M. da Silva</div>
+    <div>OAB/RS 120.898</div>
+    <div style="margin-top:4px;">Dra. Munique K. Balestro</div>
+    <div>OAB/RS 107.903</div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <header class="topbar">
+    <h1>💰 Módulo <span>Financeiro</span></h1>
+    <div class="topbar-actions">
+      <div id="asaas-status" class="asaas-status offline">
+        <span class="dot"></span> Verificando Asaas...
+      </div>
+      <button class="btn btn-gold" onclick="openModal('modal-cobranca')">
+        ＋ Nova Cobrança
+      </button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- METRICS -->
+    <div class="metrics-grid" id="metrics-grid">
+      <div class="metric-card green">
+        <span class="metric-icon">✅</span>
+        <div class="metric-label">Recebido (mês)</div>
+        <div class="metric-value green" id="m-recebido">—</div>
+        <div class="metric-sub" id="m-recebido-qtd">carregando...</div>
+      </div>
+      <div class="metric-card gold">
+        <span class="metric-icon">⏳</span>
+        <div class="metric-label">Pendente</div>
+        <div class="metric-value gold" id="m-pendente">—</div>
+        <div class="metric-sub" id="m-pendente-qtd">carregando...</div>
+      </div>
+      <div class="metric-card red">
+        <span class="metric-icon">🔴</span>
+        <div class="metric-label">Vencido</div>
+        <div class="metric-value red" id="m-vencido">—</div>
+        <div class="metric-sub" id="m-vencido-qtd">carregando...</div>
+      </div>
+      <div class="metric-card blue">
+        <span class="metric-icon">📈</span>
+        <div class="metric-label">Total Emitido (mês)</div>
+        <div class="metric-value blue" id="m-total">—</div>
+        <div class="metric-sub">
+          <div class="progress-wrap"><div class="progress-bar" id="m-progress" style="width:0%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALERTAS: DOCS PENDENTES -->
+    <div id="alertas-docs-wrap" style="margin-bottom:20px;display:none;">
+      <div class="alertas-header">
+        <div class="alertas-title">
+          <span class="pulse"></span> Clientes aguardando documentos
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="renderAlertasDocs()">↺</button>
+      </div>
+      <div class="alertas-wrap" id="alertas-list"></div>
+      <div class="alertas-empty" id="alertas-empty">
+        ✅ Nenhum cliente parado aguardando documentos.
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs" id="main-tabs">
+      <button class="tab active" onclick="switchTab('cobranças',this)">📋 Cobranças</button>
+      <button class="tab" onclick="switchTab('recorrentes',this)">🔁 Recorrentes</button>
+      <button class="tab" onclick="switchTab('relatorios',this)">📊 Relatórios</button>
+      <button class="tab" id="tab-btn-pipeline" onclick="switchTab('pipeline',this)">🧲 Pipeline</button>
+    </div>
+
+    <!-- TAB: COBRANÇAS -->
+    <div class="tab-content active" id="tab-cobranças">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title"><span class="dot"></span> Cobranças</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-outline btn-sm" onclick="loadCobranças()">↺ Atualizar</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="search-bar">
+            <div class="search-input-wrap">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="search-cob" placeholder="Buscar por cliente ou número..." oninput="filtrarCobranças()">
+            </div>
+            <select class="filter-select" id="filter-status" onchange="filtrarCobranças()">
+              <option value="">Todos os status</option>
+              <option value="PENDING">Pendentes</option>
+              <option value="RECEIVED">Recebidas</option>
+              <option value="OVERDUE">Vencidas</option>
+              <option value="CONFIRMED">Confirmadas</option>
+            </select>
+            <select class="filter-select" id="filter-tipo" onchange="filtrarCobranças()">
+              <option value="">Todos os tipos</option>
+              <option value="BOLETO">Boleto</option>
+              <option value="CREDIT_CARD">Cartão</option>
+              <option value="PIX">PIX</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Descrição</th>
+                  <th>Valor</th>
+                  <th>Vencimento</th>
+                  <th>Forma Pgto</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-cobranças">
+                <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text2);">
+                  <span class="spinner"></span> Carregando cobranças...
+                </td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: RECORRENTES -->
+    <div class="tab-content" id="tab-recorrentes">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title"><span class="dot"></span> Assinaturas / Honorários Mensais</div>
+          <button class="btn btn-gold" onclick="openModal('modal-recorrente')">＋ Nova Assinatura</button>
+        </div>
+        <div class="panel-body">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Descrição</th>
+                  <th>Valor/Ciclo</th>
+                  <th>Ciclo</th>
+                  <th>Próx. Venc.</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-recorrentes">
+                <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text2);">
+                  <span class="spinner"></span> Carregando assinaturas...
+                </td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: RELATÓRIOS -->
+    <div class="tab-content" id="tab-relatorios">
+      <div class="split-2">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title"><span class="dot"></span> Receita dos Últimos 6 Meses</div>
+          </div>
+          <div class="panel-body">
+            <div class="chart-bars" id="chart-receita">
+              <div style="color:var(--text2);font-size:13px;text-align:center;width:100%;padding:20px;">Carregando gráfico...</div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title"><span class="dot"></span> Formas de Pagamento</div>
+          </div>
+          <div class="panel-body" id="chart-formas">
+            <div style="color:var(--text2);font-size:13px;text-align:center;padding:20px;">Carregando...</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title"><span class="dot"></span> Resumo Financeiro</div>
+          <div style="display:flex;gap:8px;">
+            <select id="rel-mes" class="filter-select" onchange="loadRelatorio()">
+              <option value="">Mês atual</option>
+            </select>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div id="relatorio-body" style="color:var(--text2);text-align:center;padding:20px;">Carregando...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: PIPELINE -->
+    <div class="tab-content" id="tab-pipeline">
+      <div class="pipeline-wrap">
+
+        <!-- Métricas pipeline -->
+        <div class="pipe-metrics" id="pipe-metrics"></div>
+
+        <!-- Controles -->
+        <div class="pipeline-controls">
+          <div class="pipeline-search">
+            <span class="srch-icon">🔍</span>
+            <input type="text" id="pipe-search" placeholder="Buscar cliente no pipeline..." oninput="renderPipeline()">
+          </div>
+          <select id="pipe-filter-adv" onchange="renderPipeline()" style="width:180px;">
+            <option value="">Todos os advogados</option>
+            <option>Dr. Nicholas</option>
+            <option>Dra. Munique</option>
+          </select>
+          <select id="pipe-filter-area" onchange="renderPipeline()" style="width:160px;">
+            <option value="">Todas as áreas</option>
+            <option>Civil</option><option>Trabalhista</option><option>Família</option>
+            <option>Bancário</option><option>Criminal</option><option>Previdenciário</option><option>Imobiliário</option>
+          </select>
+          <button class="btn btn-gold" onclick="openPipeModal()">＋ Novo cliente</button>
+        </div>
+
+        <!-- Kanban board -->
+        <div class="kanban-board" id="kanban-board"></div>
+
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<!-- ===================== MODAL NOVA COBRANÇA ===================== -->
+<div class="modal-overlay" id="modal-cobranca">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>💳 Nova Cobrança</h2>
+      <button class="modal-close" onclick="closeModal('modal-cobranca')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Cliente *</label>
+        <select id="cob-cliente" required>
+          <option value="">Selecione o cliente...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Descrição / Referência *</label>
+        <input type="text" id="cob-desc" placeholder="Ex: Honorários — Processo nº 001/2025" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Valor (R$) *</label>
+          <input type="number" id="cob-valor" placeholder="0,00" min="1" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label>Vencimento *</label>
+          <input type="date" id="cob-venc" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Forma de Pagamento</label>
+        <select id="cob-tipo">
+          <option value="BOLETO">Boleto Bancário</option>
+          <option value="CREDIT_CARD">Cartão de Crédito</option>
+          <option value="PIX">PIX</option>
+        </select>
+      </div>
+      <div id="cob-parcelas-wrap" class="form-group" style="display:none;">
+        <label>Número de Parcelas</label>
+        <select id="cob-parcelas">
+          <option value="1">À vista</option>
+          <option value="2">2x</option>
+          <option value="3">3x</option>
+          <option value="4">4x</option>
+          <option value="5">5x</option>
+          <option value="6">6x</option>
+          <option value="10">10x</option>
+          <option value="12">12x</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Observações (opcional)</label>
+        <textarea id="cob-obs" placeholder="Notas adicionais..."></textarea>
+      </div>
+      <div id="cob-taxa-info" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--text2);display:none;">
+        <strong style="color:var(--gold);">💡 Estimativa de taxa Asaas:</strong>
+        <span id="cob-taxa-val"></span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-cobranca')">Cancelar</button>
+      <button class="btn btn-gold" id="btn-criar-cob" onclick="criarCobranca()">
+        ＋ Criar Cobrança
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL NOVA RECORRENTE ===================== -->
+<div class="modal-overlay" id="modal-recorrente">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>🔁 Nova Assinatura / Recorrente</h2>
+      <button class="modal-close" onclick="closeModal('modal-recorrente')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Cliente *</label>
+        <select id="rec-cliente" required>
+          <option value="">Selecione o cliente...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Descrição *</label>
+        <input type="text" id="rec-desc" placeholder="Ex: Honorários mensais — Assessoria Jurídica" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Valor Mensal (R$) *</label>
+          <input type="number" id="rec-valor" placeholder="0,00" min="1" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label>Ciclo</label>
+          <select id="rec-ciclo">
+            <option value="MONTHLY">Mensal</option>
+            <option value="BIMONTHLY">Bimestral</option>
+            <option value="QUARTERLY">Trimestral</option>
+            <option value="SEMIANNUALLY">Semestral</option>
+            <option value="YEARLY">Anual</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Data início *</label>
+          <input type="date" id="rec-inicio" required>
+        </div>
+        <div class="form-group">
+          <label>Forma de Pagamento</label>
+          <select id="rec-tipo">
+            <option value="BOLETO">Boleto Bancário</option>
+            <option value="CREDIT_CARD">Cartão de Crédito</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Observações</label>
+        <textarea id="rec-obs" placeholder="Ex: Contrato nº, processo, etc."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-recorrente')">Cancelar</button>
+      <button class="btn btn-gold" id="btn-criar-rec" onclick="criarRecorrente()">
+        ＋ Criar Assinatura
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL PIPELINE ===================== -->
+<div class="p-modal-overlay" id="p-modal">
+  <div class="p-modal">
+    <div class="p-modal-header">
+      <h2 id="p-modal-title">🧲 Novo cliente no pipeline</h2>
+      <button class="modal-close" onclick="closePipeModal()">×</button>
+    </div>
+    <div class="p-modal-body">
+      <input type="hidden" id="p-edit-id">
+      <div class="form-group">
+        <label>Nome completo *</label>
+        <input type="text" id="p-nome" placeholder="Nome do cliente">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Área jurídica</label>
+          <select id="p-area">
+            <option>Civil</option><option>Trabalhista</option><option>Família</option>
+            <option>Bancário</option><option>Criminal</option><option>Previdenciário</option><option>Imobiliário</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Advogado responsável</label>
+          <select id="p-adv">
+            <option>Dr. Nicholas</option>
+            <option>Dra. Munique</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Etapa atual</label>
+          <select id="p-etapa" onchange="toggleDocsSection()">
+            <option value="0">Prospecção</option>
+            <option value="1">Em atendimento</option>
+            <option value="2">⏳ Aguardando docs</option>
+            <option value="3">Proposta enviada</option>
+            <option value="4">✅ Contrato fechado</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Valor estimado (R$)</label>
+          <input type="number" id="p-valor" placeholder="0,00" min="0" step="100">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Data do primeiro contato</label>
+        <input type="date" id="p-data">
+      </div>
+      <div class="form-group">
+        <label>Observação / resumo do caso</label>
+        <textarea id="p-obs" placeholder="Descreva brevemente o caso..."></textarea>
+      </div>
+      <div id="p-docs-section" style="display:none;">
+        <div style="margin-bottom:8px;font-size:12px;color:var(--yellow);font-weight:700;">📎 Documentos pendentes do cliente</div>
+        <div class="docs-checklist" id="p-docs-list">
+          <label><input type="checkbox" data-doc="rg"> RG / CNH</label>
+          <label><input type="checkbox" data-doc="cpf"> CPF</label>
+          <label><input type="checkbox" data-doc="residencia"> Comprovante de residência</label>
+          <label><input type="checkbox" data-doc="contrato"> Contrato / documento do caso</label>
+          <label><input type="checkbox" data-doc="ctps"> CTPS / holerites</label>
+          <label><input type="checkbox" data-doc="procuracao"> Procuração assinada</label>
+          <label><input type="checkbox" data-doc="outros"> Outros documentos</label>
+        </div>
+        <div class="form-group" style="margin-top:12px;">
+          <label>Obs. sobre documentos pendentes</label>
+          <textarea id="p-docs-obs" placeholder="Ex: cliente enviará via WhatsApp até sexta-feira..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="p-modal-footer">
+      <button class="btn btn-red btn-sm" id="p-btn-del" onclick="deletePipeCard()" style="display:none;">🗑 Excluir</button>
+      <button class="btn btn-outline" onclick="closePipeModal()">Cancelar</button>
+      <button class="btn btn-gold" onclick="savePipeCard()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// CONFIGURAÇÃO
+// ============================================================
+const ASAAS_KEY = '$aact_prod_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6OjVkNDhjNGM3LWE4NGEtNDY0NS04NTk1LWJkZTUxNzM0MjUzYzo6JGFhY2hfMTgzYWMzZjktZDBhZC00N2Y1LWI5ZTUtMTI4ZGU4NDUyNGRl';
+const ASAAS_BASE = 'https://api.asaas.com/v3';
+
+const SUPABASE_URL = 'https://rdqwnpskoyuyhxfnyaie.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkcXducHNrb3l1eWh4Zm55YWllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMDY3MDUsImV4cCI6MjA5NTU4MjcwNX0.siSlym96p1juzH4pXKPAR3ktx_JFIhfSb1ORLKyB5h8';
+
+// Cache
+let allCobranças = [];
+let allClientes = [];
+
+// ============================================================
+// HELPERS
+// ============================================================
+const fmt = v => 'R$ ' + Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtDate = d => d ? new Date(d+'T12:00:00').toLocaleDateString('pt-BR') : '—';
+const today = () => new Date().toISOString().split('T')[0];
+
+function showToast(msg, dur=3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name==='relatorios') loadRelatorio();
+  if(name==='recorrentes') loadRecorrentes();
+  if(name==='pipeline') renderPipeline();
+}
+
+function showTab(name) {
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach((t,i) => {
+    const names = ['cobranças','recorrentes','relatorios'];
+    if(names[i]===name) { switchTab(name,t); t.classList.add('active'); }
+    else t.classList.remove('active');
+  });
+}
+
+// ============================================================
+// ASAAS API
+// ============================================================
+async function asaas(path, method='GET', body=null) {
+  const opts = {
+    method,
+    headers: {
+      'access_token': ASAAS_KEY,
+      'Content-Type': 'application/json'
+    }
+  };
+  if(body) opts.body = JSON.stringify(body);
+  const res = await fetch(ASAAS_BASE + path, opts);
+  if(!res.ok) {
+    const err = await res.json().catch(()=>({}));
+    throw new Error(err.errors?.[0]?.description || `Erro ${res.status}`);
+  }
+  return res.json();
+}
+
+// SUPABASE
+async function supabase(path, method='GET', body=null) {
+  const opts = {
+    method,
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation'
+    }
+  };
+  if(body) opts.body = JSON.stringify(body);
+  const res = await fetch(SUPABASE_URL + '/rest/v1' + path, opts);
+  if(!res.ok) throw new Error(`Supabase: ${res.status}`);
+  const txt = await res.text();
+  return txt ? JSON.parse(txt) : null;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+async function init() {
+  // Verifica status Asaas
+  try {
+    await asaas('/customers?limit=1');
+    const el = document.getElementById('asaas-status');
+    el.className = 'asaas-status online';
+    el.innerHTML = '<span class="dot"></span> Asaas Conectado';
+  } catch(e) {
+    const el = document.getElementById('asaas-status');
+    el.className = 'asaas-status offline';
+    el.innerHTML = '<span class="dot"></span> Asaas Offline';
+    console.warn('Asaas:', e.message);
+  }
+
+  await Promise.all([
+    loadClientes(),
+    loadCobranças(),
+    pipeLoad(),
+  ]);
+
+  // Default vencimento = hoje + 7 dias
+  const v = new Date(); v.setDate(v.getDate()+7);
+  document.getElementById('cob-venc').value = v.toISOString().split('T')[0];
+  document.getElementById('rec-inicio').value = today();
+
+  // Popula meses no relatório
+  const sel = document.getElementById('rel-mes');
+  for(let i=0;i<6;i++){
+    const d=new Date(); d.setMonth(d.getMonth()-i);
+    const label=d.toLocaleString('pt-BR',{month:'long',year:'numeric'});
+    const val=d.toISOString().substring(0,7);
+    sel.innerHTML += `<option value="${val}">${label}</option>`;
+  }
+
+  // Evento tipo cobrança → mostra parcelas
+  document.getElementById('cob-tipo').addEventListener('change', function(){
+    document.getElementById('cob-parcelas-wrap').style.display = this.value==='CREDIT_CARD' ? 'block':'none';
+    calcTaxa();
+  });
+  document.getElementById('cob-valor').addEventListener('input', calcTaxa);
+  document.getElementById('cob-parcelas').addEventListener('change', calcTaxa);
+}
+
+// ============================================================
+// CLIENTES
+// ============================================================
+async function loadClientes() {
+  try {
+    // Tenta buscar do Supabase primeiro
+    const sups = await supabase('/clientes?select=id,nome,email,cpf_cnpj,telefone&order=nome');
+    allClientes = sups || [];
+
+    // Popula selects
+    ['cob-cliente','rec-cliente'].forEach(id=>{
+      const sel = document.getElementById(id);
+      sel.innerHTML = '<option value="">Selecione o cliente...</option>';
+      allClientes.forEach(c=>{
+        sel.innerHTML += `<option value="${c.id}" data-nome="${c.nome}" data-email="${c.email||''}" data-cpf="${c.cpf_cnpj||''}">${c.nome}</option>`;
+      });
+    });
+  } catch(e) {
+    console.warn('Clientes Supabase:', e.message);
+    // Fallback: busca do Asaas
+    try {
+      const data = await asaas('/customers?limit=100');
+      allClientes = (data.data||[]).map(c=>({id:c.id,nome:c.name,email:c.email,cpf_cnpj:c.cpfCnpj}));
+      ['cob-cliente','rec-cliente'].forEach(id=>{
+        const sel = document.getElementById(id);
+        sel.innerHTML = '<option value="">Selecione o cliente...</option>';
+        allClientes.forEach(c=>{
+          sel.innerHTML += `<option value="${c.id}" data-nome="${c.nome}">${c.nome}</option>`;
+        });
+      });
+    } catch(e2) { console.warn('Clientes Asaas:', e2); }
+  }
+}
+
+// ============================================================
+// COBRANÇAS
+// ============================================================
+async function loadCobranças() {
+  const tbody = document.getElementById('tbody-cobranças');
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text2);"><span class="spinner"></span> Carregando...</td></tr>';
+
+  try {
+    // Busca do Asaas (mês atual + próximos 30 dias)
+    const hoje = new Date();
+    const m = hoje.getMonth()+1;
+    const y = hoje.getFullYear();
+    const dataInicio = `${y}-${String(m).padStart(2,'0')}-01`;
+    const dataFim = new Date(y,m,0).toISOString().split('T')[0];
+
+    const [recebidas, pendentes, vencidas] = await Promise.all([
+      asaas(`/payments?status=RECEIVED&dueDateStart=${dataInicio}&dueDateFinish=${dataFim}&limit=100`),
+      asaas(`/payments?status=PENDING&limit=100`),
+      asaas(`/payments?status=OVERDUE&limit=100`),
+    ]);
+
+    allCobranças = [
+      ...(recebidas.data||[]),
+      ...(pendentes.data||[]),
+      ...(vencidas.data||[]),
+    ];
+
+    // Sort por vencimento
+    allCobranças.sort((a,b)=>new Date(b.dueDate)-new Date(a.dueDate));
+
+    // Métricas
+    const totalRecebido = (recebidas.data||[]).reduce((s,c)=>s+c.value,0);
+    const totalPendente = (pendentes.data||[]).reduce((s,c)=>s+c.value,0);
+    const totalVencido = (vencidas.data||[]).reduce((s,c)=>s+c.value,0);
+    const totalMes = totalRecebido + totalPendente;
+
+    document.getElementById('m-recebido').textContent = fmt(totalRecebido);
+    document.getElementById('m-recebido-qtd').textContent = `${(recebidas.data||[]).length} cobranças`;
+    document.getElementById('m-pendente').textContent = fmt(totalPendente);
+    document.getElementById('m-pendente-qtd').textContent = `${(pendentes.data||[]).length} cobranças`;
+    document.getElementById('m-vencido').textContent = fmt(totalVencido);
+    document.getElementById('m-vencido-qtd').textContent = `${(vencidas.data||[]).length} cobranças`;
+    document.getElementById('m-total').textContent = fmt(totalMes);
+    const pct = totalMes>0 ? Math.min(100,Math.round(totalRecebido/totalMes*100)):0;
+    document.getElementById('m-progress').style.width = pct+'%';
+
+    renderCobranças(allCobranças);
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--red);">
+      ⚠️ Erro ao carregar: ${e.message}
+      <br><small style="color:var(--text2);margin-top:8px;display:block;">Verifique a chave API do Asaas ou o CORS do proxy.</small>
+    </td></tr>`;
+    // Zera métricas
+    ['m-recebido','m-pendente','m-vencido','m-total'].forEach(id=>document.getElementById(id).textContent='R$ 0,00');
+  }
+}
+
+function renderCobranças(list) {
+  const tbody = document.getElementById('tbody-cobranças');
+  if(!list.length){
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="icon">💳</div><h3>Nenhuma cobrança encontrada</h3><p>Crie uma nova cobrança clicando em "+ Nova Cobrança"</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map(c=>{
+    const badge = statusBadge(c.status);
+    const tipo = tipoBadge(c.billingType);
+    const podeLink = c.invoiceUrl || c.bankSlipUrl;
+    return `<tr>
+      <td><div style="font-weight:600;">${c.customer?.name||'—'}</div><div style="font-size:11px;color:var(--text2);">${c.description?.substring(0,40)||''}</div></td>
+      <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${c.description||'—'}</td>
+      <td><span class="cob-amount">${fmt(c.value)}</span>${c.installmentCount>1?`<div style="font-size:11px;color:var(--text2);">${c.installmentNumber||1}/${c.installmentCount}x</div>`:''}</td>
+      <td>${fmtDate(c.dueDate)}</td>
+      <td>${tipo}</td>
+      <td>${badge}</td>
+      <td>
+        <div class="td-actions">
+          ${podeLink?`<button class="btn btn-outline btn-sm" onclick="copiarLink('${podeLink}')">🔗 Link</button>`:''}
+          <button class="btn btn-outline btn-sm" onclick="verCobranca('${c.id}')">👁</button>
+          ${c.status==='PENDING'||c.status==='OVERDUE'?`<button class="btn btn-green btn-sm" onclick="confirmarPgto('${c.id}')">✓ Pago</button>`:''}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function filtrarCobranças() {
+  const q = document.getElementById('search-cob').value.toLowerCase();
+  const status = document.getElementById('filter-status').value;
+  const tipo = document.getElementById('filter-tipo').value;
+  const filtered = allCobranças.filter(c=>{
+    const matchQ = !q || (c.customer?.name||'').toLowerCase().includes(q) || (c.description||'').toLowerCase().includes(q);
+    const matchS = !status || c.status===status;
+    const matchT = !tipo || c.billingType===tipo;
+    return matchQ && matchS && matchT;
+  });
+  renderCobranças(filtered);
+}
+
+function statusBadge(s) {
+  const map = {
+    'RECEIVED': '<span class="badge badge-green">Recebida</span>',
+    'CONFIRMED': '<span class="badge badge-green">Confirmada</span>',
+    'PENDING': '<span class="badge badge-yellow">Pendente</span>',
+    'OVERDUE': '<span class="badge badge-red">Vencida</span>',
+    'CANCELLED': '<span class="badge badge-gray">Cancelada</span>',
+  };
+  return map[s] || `<span class="badge badge-gray">${s}</span>`;
+}
+
+function tipoBadge(t) {
+  const map = {
+    'BOLETO':'<span class="badge badge-blue">Boleto</span>',
+    'CREDIT_CARD':'<span class="badge badge-gold" style="background:rgba(201,168,76,.15);color:var(--gold);border:1px solid rgba(201,168,76,.3);">Cartão</span>',
+    'PIX':'<span class="badge badge-green">PIX</span>',
+    'TRANSFER':'<span class="badge badge-blue">TED</span>',
+  };
+  return map[t] || `<span class="badge badge-gray">${t||'—'}</span>`;
+}
+
+async function copiarLink(url) {
+  try {
+    await navigator.clipboard.writeText(url);
+    showToast('✅ Link copiado para a área de transferência!');
+  } catch {
+    prompt('Copie o link:', url);
+  }
+}
+
+async function verCobranca(id) {
+  try {
+    const c = await asaas(`/payments/${id}`);
+    const info = [
+      `Cliente: ${c.customer?.name||'—'}`,
+      `Valor: ${fmt(c.value)}`,
+      `Status: ${c.status}`,
+      `Venc: ${fmtDate(c.dueDate)}`,
+      c.invoiceUrl ? `Link: ${c.invoiceUrl}` : '',
+      c.nossoNumero ? `Nosso número: ${c.nossoNumero}` : '',
+    ].filter(Boolean).join('\n');
+    alert(info);
+  } catch(e) { showToast('Erro: '+e.message); }
+}
+
+async function confirmarPgto(id) {
+  if(!confirm('Confirmar recebimento desta cobrança?')) return;
+  try {
+    await asaas(`/payments/${id}/receiveInCash`, 'POST', {
+      paymentDate: today(),
+      value: null,
+      notifyCustomer: false
+    });
+    showToast('✅ Pagamento confirmado!');
+    loadCobranças();
+  } catch(e) { showToast('Erro: '+e.message); }
+}
+
+// ============================================================
+// CRIAR COBRANÇA
+// ============================================================
+async function getOuCriarClienteAsaas(clienteId) {
+  // Tenta encontrar o cliente no Asaas pelo CPF/CNPJ
+  const cliente = allClientes.find(c=>c.id===clienteId);
+  if(!cliente) throw new Error('Cliente não encontrado.');
+
+  // Busca no Asaas
+  if(cliente.cpf_cnpj) {
+    try {
+      const r = await asaas(`/customers?cpfCnpj=${cliente.cpf_cnpj.replace(/\D/g,'')}`);
+      if(r.data?.length) return r.data[0].id;
+    } catch{}
+  }
+
+  // Cria no Asaas
+  const payload = { name: cliente.nome };
+  if(cliente.email) payload.email = cliente.email;
+  if(cliente.cpf_cnpj) payload.cpfCnpj = cliente.cpf_cnpj.replace(/\D/g,'');
+  if(cliente.telefone) payload.phone = cliente.telefone;
+  const novo = await asaas('/customers', 'POST', payload);
+  return novo.id;
+}
+
+async function criarCobranca() {
+  const btn = document.getElementById('btn-criar-cob');
+  const clienteId = document.getElementById('cob-cliente').value;
+  const desc = document.getElementById('cob-desc').value.trim();
+  const valor = parseFloat(document.getElementById('cob-valor').value);
+  const venc = document.getElementById('cob-venc').value;
+  const tipo = document.getElementById('cob-tipo').value;
+  const parcelas = parseInt(document.getElementById('cob-parcelas').value||1);
+  const obs = document.getElementById('cob-obs').value.trim();
+
+  if(!clienteId || !desc || !valor || !venc) {
+    showToast('⚠️ Preencha todos os campos obrigatórios.'); return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Criando...';
+
+  try {
+    const asaasClienteId = await getOuCriarClienteAsaas(clienteId);
+
+    const payload = {
+      customer: asaasClienteId,
+      billingType: tipo,
+      value: valor,
+      dueDate: venc,
+      description: desc,
+    };
+    if(obs) payload.externalReference = obs;
+    if(tipo==='CREDIT_CARD' && parcelas>1) {
+      payload.installmentCount = parcelas;
+      payload.installmentValue = valor/parcelas;
+    }
+
+    const result = await asaas('/payments', 'POST', payload);
+
+    showToast('✅ Cobrança criada com sucesso!');
+    closeModal('modal-cobranca');
+
+    // Abre link se disponível
+    if(result.invoiceUrl) {
+      if(confirm('Cobrança criada! Deseja abrir o link de pagamento?')) {
+        window.open(result.invoiceUrl,'_blank');
+      }
+    }
+
+    loadCobranças();
+  } catch(e) {
+    showToast('❌ Erro: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '＋ Criar Cobrança';
+  }
+}
+
+// ============================================================
+// RECORRENTES
+// ============================================================
+async function loadRecorrentes() {
+  const tbody = document.getElementById('tbody-recorrentes');
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text2);"><span class="spinner"></span> Carregando...</td></tr>';
+  try {
+    const data = await asaas('/subscriptions?limit=100');
+    const subs = data.data || [];
+    if(!subs.length){
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="icon">🔁</div><h3>Nenhuma assinatura ativa</h3><p>Configure honorários mensais automáticos para seus clientes.</p></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = subs.map(s=>{
+      const ciclos = {MONTHLY:'Mensal',BIMONTHLY:'Bimestral',QUARTERLY:'Trimestral',SEMIANNUALLY:'Semestral',YEARLY:'Anual'};
+      const badge = s.status==='ACTIVE' ? '<span class="badge badge-green">Ativa</span>' : '<span class="badge badge-gray">Inativa</span>';
+      return `<tr>
+        <td><div style="font-weight:600;">${s.customer?.name||'—'}</div></td>
+        <td>${s.description||'—'}</td>
+        <td><span class="cob-amount">${fmt(s.value)}</span></td>
+        <td>${ciclos[s.cycle]||s.cycle}</td>
+        <td>${fmtDate(s.nextDueDate)}</td>
+        <td>${badge}</td>
+        <td>
+          <div class="td-actions">
+            ${s.status==='ACTIVE'?`<button class="btn btn-red btn-sm" onclick="cancelarSub('${s.id}')">⏸ Pausar</button>`:''}
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--red);">⚠️ ${e.message}</td></tr>`;
+  }
+}
+
+async function criarRecorrente() {
+  const btn = document.getElementById('btn-criar-rec');
+  const clienteId = document.getElementById('rec-cliente').value;
+  const desc = document.getElementById('rec-desc').value.trim();
+  const valor = parseFloat(document.getElementById('rec-valor').value);
+  const ciclo = document.getElementById('rec-ciclo').value;
+  const inicio = document.getElementById('rec-inicio').value;
+  const tipo = document.getElementById('rec-tipo').value;
+  const obs = document.getElementById('rec-obs').value.trim();
+
+  if(!clienteId || !desc || !valor || !inicio) {
+    showToast('⚠️ Preencha todos os campos obrigatórios.'); return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Criando...';
+
+  try {
+    const asaasClienteId = await getOuCriarClienteAsaas(clienteId);
+    const payload = {
+      customer: asaasClienteId,
+      billingType: tipo,
+      value: valor,
+      nextDueDate: inicio,
+      cycle: ciclo,
+      description: desc,
+    };
+    if(obs) payload.externalReference = obs;
+
+    await asaas('/subscriptions', 'POST', payload);
+    showToast('✅ Assinatura criada! Cobranças automáticas ativadas.');
+    closeModal('modal-recorrente');
+    loadRecorrentes();
+  } catch(e) {
+    showToast('❌ Erro: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '＋ Criar Assinatura';
+  }
+}
+
+async function cancelarSub(id) {
+  if(!confirm('Cancelar esta assinatura recorrente?')) return;
+  try {
+    await asaas(`/subscriptions/${id}`, 'DELETE');
+    showToast('Assinatura cancelada.');
+    loadRecorrentes();
+  } catch(e) { showToast('Erro: '+e.message); }
+}
+
+// ============================================================
+// RELATÓRIOS
+// ============================================================
+async function loadRelatorio() {
+  const mesSel = document.getElementById('rel-mes').value;
+  const body = document.getElementById('relatorio-body');
+  body.innerHTML = '<span class="spinner"></span>';
+
+  try {
+    const hoje = new Date();
+    let ano, mes;
+    if(mesSel) {
+      [ano, mes] = mesSel.split('-').map(Number);
+    } else {
+      ano = hoje.getFullYear(); mes = hoje.getMonth()+1;
+    }
+    const inicio = `${ano}-${String(mes).padStart(2,'0')}-01`;
+    const fim = new Date(ano,mes,0).toISOString().split('T')[0];
+
+    const [rec, pend, venc] = await Promise.all([
+      asaas(`/payments?status=RECEIVED&dueDateStart=${inicio}&dueDateFinish=${fim}&limit=200`),
+      asaas(`/payments?status=PENDING&dueDateStart=${inicio}&dueDateFinish=${fim}&limit=200`),
+      asaas(`/payments?status=OVERDUE&dueDateStart=${inicio}&dueDateFinish=${fim}&limit=200`),
+    ]);
+
+    const totalRec = (rec.data||[]).reduce((s,c)=>s+c.value,0);
+    const totalPend = (pend.data||[]).reduce((s,c)=>s+c.value,0);
+    const totalVenc = (venc.data||[]).reduce((s,c)=>s+c.value,0);
+    const total = totalRec+totalPend+totalVenc;
+
+    body.innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+        <div style="background:var(--bg3);border-radius:10px;padding:16px;text-align:center;">
+          <div style="font-size:11px;color:var(--text2);margin-bottom:6px;">RECEBIDO</div>
+          <div style="font-size:22px;font-weight:800;color:var(--green);">${fmt(totalRec)}</div>
+          <div style="font-size:11px;color:var(--text2);">${(rec.data||[]).length} cobranças</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:10px;padding:16px;text-align:center;">
+          <div style="font-size:11px;color:var(--text2);margin-bottom:6px;">PENDENTE</div>
+          <div style="font-size:22px;font-weight:800;color:var(--yellow);">${fmt(totalPend)}</div>
+          <div style="font-size:11px;color:var(--text2);">${(pend.data||[]).length} cobranças</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:10px;padding:16px;text-align:center;">
+          <div style="font-size:11px;color:var(--text2);margin-bottom:6px;">VENCIDO</div>
+          <div style="font-size:22px;font-weight:800;color:var(--red);">${fmt(totalVenc)}</div>
+          <div style="font-size:11px;color:var(--text2);">${(venc.data||[]).length} cobranças</div>
+        </div>
+      </div>
+      <div style="background:var(--bg3);border-radius:10px;padding:16px;">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">TAXA DE RECEBIMENTO</div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div class="progress-wrap" style="flex:1;height:10px;">
+            <div class="progress-bar" style="width:${total>0?Math.round(totalRec/total*100):0}%"></div>
+          </div>
+          <div style="font-size:18px;font-weight:800;color:var(--gold);">${total>0?Math.round(totalRec/total*100):0}%</div>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-top:8px;">Total emitido: <strong style="color:var(--text);">${fmt(total)}</strong></div>
+      </div>
+    `;
+
+    renderChartReceita();
+    renderChartFormas([...(rec.data||[]),...(pend.data||[]),...(venc.data||[])]);
+  } catch(e) {
+    body.innerHTML = `<div style="color:var(--red);">⚠️ ${e.message}</div>`;
+  }
+}
+
+async function renderChartReceita() {
+  const chart = document.getElementById('chart-receita');
+  const meses = [];
+  for(let i=5;i>=0;i--){
+    const d=new Date(); d.setMonth(d.getMonth()-i);
+    meses.push({
+      label: d.toLocaleString('pt-BR',{month:'short'}),
+      ini: `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`,
+      fim: new Date(d.getFullYear(),d.getMonth()+1,0).toISOString().split('T')[0],
+    });
+  }
+
+  try {
+    const vals = await Promise.all(meses.map(m=>
+      asaas(`/payments?status=RECEIVED&dueDateStart=${m.ini}&dueDateFinish=${m.fim}&limit=200`)
+        .then(r=>(r.data||[]).reduce((s,c)=>s+c.value,0)).catch(()=>0)
+    ));
+    const max = Math.max(...vals,1);
+    chart.innerHTML = vals.map((v,i)=>`
+      <div class="bar-wrap">
+        <div class="bar-val">${v>0?'R$'+Math.round(v/1000)+'k':''}</div>
+        <div class="bar" style="height:${Math.round(v/max*80)+4}px;" title="${fmt(v)}"></div>
+        <div class="bar-label">${meses[i].label}</div>
+      </div>
+    `).join('');
+  } catch(e) {
+    chart.innerHTML = '<div style="color:var(--text2);font-size:12px;">Carregamento indisponível</div>';
+  }
+}
+
+function renderChartFormas(list) {
+  const el = document.getElementById('chart-formas');
+  const tipos = {};
+  list.forEach(c=>{ tipos[c.billingType]=(tipos[c.billingType]||0)+c.value; });
+  const total = Object.values(tipos).reduce((a,b)=>a+b,0)||1;
+  const nomes = {BOLETO:'Boleto',CREDIT_CARD:'Cartão',PIX:'PIX',TRANSFER:'TED'};
+  const cores = {BOLETO:'var(--blue)',CREDIT_CARD:'var(--gold)',PIX:'var(--green)',TRANSFER:'var(--text2)'};
+  el.innerHTML = Object.entries(tipos).map(([k,v])=>`
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+        <span style="color:${cores[k]||'var(--text2)'};">${nomes[k]||k}</span>
+        <span style="color:var(--text);font-weight:700;">${fmt(v)}</span>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-bar" style="width:${Math.round(v/total*100)}%;background:${cores[k]||'var(--text2)'};"></div>
+      </div>
+    </div>
+  `).join('') || '<div style="color:var(--text2);font-size:12px;">Sem dados</div>';
+}
+
+// ============================================================
+// CALCULA TAXA ESTIMADA
+// ============================================================
+function calcTaxa() {
+  const tipo = document.getElementById('cob-tipo').value;
+  const valor = parseFloat(document.getElementById('cob-valor').value)||0;
+  const parcelas = parseInt(document.getElementById('cob-parcelas').value||1);
+  const wrap = document.getElementById('cob-taxa-info');
+  const span = document.getElementById('cob-taxa-val');
+  if(!valor || tipo!=='CREDIT_CARD') { wrap.style.display='none'; return; }
+  const taxa = 0.49 + (valor * 0.0199);
+  const liquido = valor - taxa;
+  span.textContent = ` R$ ${taxa.toFixed(2)} (taxa fixa R$ 0,49 + 1,99%). Você recebe ${fmt(liquido)} líquido.`;
+  wrap.style.display='block';
+}
+
+// ============================================================
+// PIPELINE DE CLIENTES
+// ============================================================
+const PIPE_COLS = [
+  { id:0, label:'Prospecção',         dot:'#888780', valColor:'var(--text2)' },
+  { id:1, label:'Em atendimento',     dot:'#3498DB', valColor:'#3498DB'      },
+  { id:2, label:'⏳ Aguardando docs', dot:'#F39C12', valColor:'#F39C12'      },
+  { id:3, label:'Proposta enviada',   dot:'#9B59B6', valColor:'#9B59B6'      },
+  { id:4, label:'✅ Contrato fechado',dot:'#2ECC71', valColor:'#2ECC71'      },
+];
+
+const DOC_LABELS = {
+  rg:'RG / CNH', cpf:'CPF', residencia:'Comp. residência',
+  contrato:'Doc. do caso', ctps:'CTPS / holerites',
+  procuracao:'Procuração', outros:'Outros docs'
+};
+
+const ADV_COLORS_PIPE = {
+  'Dr. Nicholas':  ['#1a2f42','#3498DB'],
+  'Dra. Munique':  ['#2a1a2a','#C9A84C'],
+};
+
+let pipeCards = [];
+let pipeNextId = 1;
+
+// ---- Supabase helpers para pipeline ----
+async function pipeLoad() {
+  try {
+    const data = await supabase('/pipeline_clientes?order=created_at.desc');
+    if(data && data.length) {
+      pipeCards = data.map(r => ({
+        id: r.id, nome: r.nome, area: r.area, etapa: r.etapa,
+        valor: r.valor||0, data: r.data_contato||today(),
+        adv: r.advogado, obs: r.observacao||'',
+        docs: r.docs_pendentes||[], docsObs: r.docs_obs||''
+      }));
+      pipeNextId = Math.max(...pipeCards.map(c=>typeof c.id==='number'?c.id:0), 0) + 1;
+    }
+  } catch(e) {
+    // Tabela pode não existir ainda — usa dados locais de exemplo
+    if(!pipeCards.length) pipeInitDemo();
+  }
+  renderPipeline();
+  renderAlertasDocs();
+}
+
+async function pipeSaveRemote(card) {
+  const payload = {
+    nome: card.nome, area: card.area, etapa: card.etapa,
+    valor: card.valor||0, data_contato: card.data,
+    advogado: card.adv, observacao: card.obs,
+    docs_pendentes: card.docs||[], docs_obs: card.docsObs||''
+  };
+  try {
+    if(typeof card.id === 'string' && card.id.startsWith('local')) {
+      // novo
+      const res = await supabase('/pipeline_clientes', 'POST', payload);
+      if(res && res[0]) card.id = res[0].id;
+    } else {
+      await supabase(`/pipeline_clientes?id=eq.${card.id}`, 'PATCH', payload);
+    }
+  } catch(e) { /* offline — mantém local */ }
+}
+
+async function pipeDeleteRemote(id) {
+  try { await supabase(`/pipeline_clientes?id=eq.${id}`, 'DELETE'); } catch(e) {}
+}
+
+function pipeInitDemo() {
+  pipeCards = [
+    {id:'local1',nome:'João Pedro Alves',area:'Trabalhista',etapa:0,valor:3500,data:'2026-05-28',adv:'Dr. Nicholas',obs:'Demissão sem justa causa.',docs:[],docsObs:''},
+    {id:'local2',nome:'Carla Souza Mendes',area:'Família',etapa:1,valor:4200,data:'2026-05-22',adv:'Dra. Munique',obs:'Divórcio litigioso. Consulta realizada.',docs:[],docsObs:''},
+    {id:'local3',nome:'Sandro Lima',area:'Civil',etapa:1,valor:6000,data:'2026-05-20',adv:'Dr. Nicholas',obs:'Indenização por danos materiais.',docs:[],docsObs:''},
+    {id:'local4',nome:'Ana Beatriz Costa',area:'Bancário',etapa:2,valor:2800,data:'2026-05-15',adv:'Dra. Munique',obs:'Cobrança indevida.',docs:['rg','cpf','contrato'],docsObs:'Aguardando comprovante bancário.'},
+    {id:'local5',nome:'Roberto Ferreira',area:'Criminal',etapa:3,valor:8000,data:'2026-05-10',adv:'Dr. Nicholas',obs:'JECRIM. Aguardando aceite.',docs:[],docsObs:''},
+    {id:'local6',nome:'Marcos Oliveira',area:'Previdenciário',etapa:4,valor:5500,data:'2026-05-05',adv:'Dra. Munique',obs:'BPC/LOAS. Contrato assinado.',docs:[],docsObs:''},
+  ];
+}
+
+// ---- Render ----
+function renderPipeline() {
+  const q = (document.getElementById('pipe-search')||{value:''}).value.toLowerCase();
+  const fa = (document.getElementById('pipe-filter-adv')||{value:''}).value;
+  const far = (document.getElementById('pipe-filter-area')||{value:''}).value;
+
+  const filtered = pipeCards.filter(c => {
+    const mq = !q || c.nome.toLowerCase().includes(q) || (c.obs||'').toLowerCase().includes(q);
+    const mf = !fa || c.adv === fa;
+    const ma = !far || c.area === far;
+    return mq && mf && ma;
+  });
+
+  // Métricas
+  const pm = document.getElementById('pipe-metrics');
+  if(pm) {
+    const mdata = PIPE_COLS.map(col => {
+      const items = filtered.filter(c => c.etapa === col.id);
+      return { label: col.label.replace('⏳ ','').replace('✅ ',''), n: items.length,
+               val: items.reduce((s,c)=>s+(+c.valor||0),0), dot: col.dot };
+    });
+    pm.innerHTML = mdata.map((m,i) => `
+      <div class="pipe-mc c${i}">
+        <div class="pipe-mc-label">${m.label}</div>
+        <div class="pipe-mc-val" style="color:${PIPE_COLS[i].dot}">${m.n}</div>
+        <div class="pipe-mc-sub">${m.val>0 ? fmtPipe(m.val) : 'sem valor'}</div>
+      </div>`).join('');
+  }
+
+  // Board
+  const board = document.getElementById('kanban-board');
+  if(!board) return;
+  board.innerHTML = PIPE_COLS.map(col => {
+    const items = filtered.filter(c => c.etapa === col.id);
+    const colTotal = items.reduce((s,c)=>s+(+c.valor||0),0);
+
+    const cardsHtml = items.length ? items.map(c => {
+      const av = ADV_COLORS_PIPE[c.adv] || ['#1a1a1a','#aaa'];
+      const ini = c.nome.split(' ').filter(Boolean).slice(0,2).map(p=>p[0].toUpperCase()).join('');
+      const docsPend = (c.docs||[]).length;
+      const docsAlert = col.id===2 && docsPend>0
+        ? `<div class="k-docs-alert">⚠️ ${docsPend} doc${docsPend>1?'s':''} pendente${docsPend>1?'s':''}</div>` : '';
+      const docsOk = col.id===2 && docsPend===0
+        ? `<div class="k-docs-alert" style="background:rgba(46,204,113,.1);border-color:rgba(46,204,113,.3);color:var(--green);">✅ Docs completos</div>` : '';
+
+      const backBtn = col.id > 0
+        ? `<button class="k-move-btn" onclick="movePipeCard(event,'${c.id}',-1)">← Voltar</button>` : '';
+      const fwdBtn = col.id < 4
+        ? `<button class="k-move-btn" onclick="movePipeCard(event,'${c.id}',1)">Avançar →</button>` : '';
+
+      return `<div class="k-card" onclick="openPipeEdit('${c.id}')">
+        <div class="k-card-top">
+          <div class="k-avatar" style="background:${av[0]};color:${av[1]}">${ini}</div>
+          <div style="flex:1;min-width:0">
+            <div class="k-name">${c.nome}</div>
+            <div class="k-sub">${c.adv} · ${c.area}</div>
+          </div>
+        </div>
+        ${c.obs ? `<div class="k-obs">${c.obs}</div>` : ''}
+        ${docsAlert}${docsOk}
+        <div class="k-meta">
+          <span class="k-date">📅 ${fmtDatePipe(c.data)}</span>
+          <span class="k-val" style="color:${col.valColor}">${c.valor>0?fmtPipe(c.valor):'—'}</span>
+        </div>
+        <div class="k-move-btns">${backBtn}${fwdBtn}</div>
+      </div>`;
+    }).join('')
+    : `<div class="k-empty">Nenhum cliente</div>`;
+
+    return `<div class="k-col">
+      <div class="k-col-header">
+        <div class="k-col-title">
+          <span class="k-col-dot" style="background:${col.dot}"></span>
+          ${col.label}
+        </div>
+        <span class="k-col-count">${items.length}</span>
+      </div>
+      ${colTotal>0 ? `<div class="k-col-total">${fmtPipe(colTotal)}</div>` : ''}
+      <div class="k-cards">${cardsHtml}</div>
+      <button class="k-add-btn" onclick="openPipeAddCol(${col.id})">＋ Adicionar</button>
+    </div>`;
+  }).join('');
+}
+
+function fmtPipe(v) { return 'R$ '+Math.round(+v||0).toLocaleString('pt-BR'); }
+function fmtDatePipe(d) { if(!d)return''; const[y,m,dd]=d.split('-'); return `${dd}/${m}`; }
+
+async function movePipeCard(e, id, dir) {
+  e.stopPropagation();
+  const c = pipeCards.find(x=>String(x.id)===String(id));
+  if(!c) return;
+  c.etapa = Math.max(0, Math.min(4, c.etapa + dir));
+  renderPipeline();
+  renderAlertasDocs();
+  await pipeSaveRemote(c);
+}
+
+// ---- Modal ----
+function toggleDocsSection() {
+  const etapa = +document.getElementById('p-etapa').value;
+  document.getElementById('p-docs-section').style.display = etapa===2 ? 'block':'none';
+}
+
+function openPipeModal() {
+  document.getElementById('p-edit-id').value = '';
+  document.getElementById('p-modal-title').textContent = '🧲 Novo cliente no pipeline';
+  document.getElementById('p-nome').value = '';
+  document.getElementById('p-area').value = 'Civil';
+  document.getElementById('p-etapa').value = '0';
+  document.getElementById('p-valor').value = '';
+  document.getElementById('p-data').value = today();
+  document.getElementById('p-adv').value = 'Dr. Nicholas';
+  document.getElementById('p-obs').value = '';
+  document.getElementById('p-docs-obs').value = '';
+  document.getElementById('p-btn-del').style.display = 'none';
+  document.querySelectorAll('#p-docs-list input[type=checkbox]').forEach(cb=>cb.checked=false);
+  toggleDocsSection();
+  document.getElementById('p-modal').classList.add('open');
+}
+
+function openPipeAddCol(col) {
+  openPipeModal();
+  document.getElementById('p-etapa').value = String(col);
+  toggleDocsSection();
+}
+
+function openPipeEdit(id) {
+  const c = pipeCards.find(x=>String(x.id)===String(id));
+  if(!c) return;
+  document.getElementById('p-edit-id').value = String(c.id);
+  document.getElementById('p-modal-title').textContent = '✏️ Editar cliente';
+  document.getElementById('p-nome').value = c.nome;
+  document.getElementById('p-area').value = c.area;
+  document.getElementById('p-etapa').value = String(c.etapa);
+  document.getElementById('p-valor').value = c.valor||'';
+  document.getElementById('p-data').value = c.data||today();
+  document.getElementById('p-adv').value = c.adv;
+  document.getElementById('p-obs').value = c.obs||'';
+  document.getElementById('p-docs-obs').value = c.docsObs||'';
+  document.getElementById('p-btn-del').style.display = '';
+  document.querySelectorAll('#p-docs-list input[type=checkbox]').forEach(cb => {
+    cb.checked = (c.docs||[]).includes(cb.dataset.doc);
+  });
+  toggleDocsSection();
+  document.getElementById('p-modal').classList.add('open');
+}
+
+function closePipeModal() {
+  document.getElementById('p-modal').classList.remove('open');
+}
+
+async function savePipeCard() {
+  const id = document.getElementById('p-edit-id').value;
+  const etapa = +document.getElementById('p-etapa').value;
+  const docs = etapa===2
+    ? Array.from(document.querySelectorAll('#p-docs-list input[type=checkbox]'))
+        .filter(cb=>!cb.checked).map(cb=>cb.dataset.doc)
+    : [];
+
+  const obj = {
+    nome: document.getElementById('p-nome').value.trim() || 'Sem nome',
+    area: document.getElementById('p-area').value,
+    etapa,
+    valor: +document.getElementById('p-valor').value || 0,
+    data: document.getElementById('p-data').value || today(),
+    adv: document.getElementById('p-adv').value,
+    obs: document.getElementById('p-obs').value.trim(),
+    docs,
+    docsObs: document.getElementById('p-docs-obs').value.trim(),
+  };
+
+  if(id) {
+    const existing = pipeCards.find(c=>String(c.id)===String(id));
+    if(existing) Object.assign(existing, obj);
+  } else {
+    const newCard = { id: 'local'+(pipeNextId++), ...obj };
+    pipeCards.unshift(newCard);
+    await pipeSaveRemote(newCard);
+  }
+  if(id) {
+    const existing = pipeCards.find(c=>String(c.id)===String(id));
+    if(existing) await pipeSaveRemote(existing);
+  }
+
+  closePipeModal();
+  renderPipeline();
+  renderAlertasDocs();
+  showToast('✅ Cliente salvo no pipeline!');
+}
+
+async function deletePipeCard() {
+  const id = document.getElementById('p-edit-id').value;
+  if(!id) return;
+  if(!confirm('Remover este cliente do pipeline?')) return;
+  await pipeDeleteRemote(id);
+  pipeCards = pipeCards.filter(c=>String(c.id)!==String(id));
+  closePipeModal();
+  renderPipeline();
+  showToast('Cliente removido do pipeline.');
+}
+
+// ============================================================
+// switchTabFull — ativa aba pipeline pelo sidebar
+// ============================================================
+function switchTabFull(name, el) {
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(el) el.classList.add('active');
+  document.querySelectorAll('#main-tabs .tab').forEach(t=>t.classList.remove('active'));
+  const tabBtn = document.getElementById('tab-btn-pipeline');
+  if(tabBtn) tabBtn.classList.add('active');
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  const tc = document.getElementById('tab-pipeline');
+  if(tc) { tc.classList.add('active'); renderPipeline(); }
+}
+
+// ============================================================
+// ALERTAS — CLIENTES AGUARDANDO DOCS
+// ============================================================
+const DIAS_WARN = 3;   // amarelo a partir de 3 dias parado
+const DIAS_URGENT = 7; // vermelho a partir de 7 dias parado
+
+function diasParado(dataStr) {
+  if(!dataStr) return 0;
+  const diff = new Date() - new Date(dataStr + 'T12:00:00');
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
+}
+
+function renderAlertasDocs() {
+  const wrap = document.getElementById('alertas-docs-wrap');
+  const list = document.getElementById('alertas-list');
+  const empty = document.getElementById('alertas-empty');
+  if(!wrap || !list) return;
+
+  // filtra só etapa 2 (aguardando docs) com pelo menos DIAS_WARN dias parado
+  const pendentes = pipeCards
+    .filter(c => c.etapa === 2 && diasParado(c.data) >= DIAS_WARN)
+    .sort((a,b) => diasParado(b.data) - diasParado(a.data)); // mais antigos primeiro
+
+  wrap.style.display = 'block';
+
+  if(!pendentes.length) {
+    list.innerHTML = '';
+    empty.classList.add('show');
+    return;
+  }
+
+  empty.classList.remove('show');
+
+  list.innerHTML = pendentes.map(c => {
+    const dias = diasParado(c.data);
+    const urgente = dias >= DIAS_URGENT;
+    const docsCount = (c.docs||[]).length;
+    const docsTexto = docsCount > 0
+      ? `${docsCount} doc${docsCount>1?'s':''} pendente${docsCount>1?'s':''}: ${(c.docs||[]).map(d=>DOC_LABELS[d]||d).join(', ')}`
+      : 'documentos solicitados pendentes de envio';
+    const badgeClass = urgente ? 'danger' : 'warn';
+    const badgeText = urgente ? `🔴 ${dias} dias parado` : `⏳ ${dias} dias`;
+    const icone = urgente ? '🚨' : '⚠️';
+
+    return `<div class="alerta-docs${urgente?' urgente':''}" onclick="irParaPipeline('${c.id}')">
+      <span class="alerta-icon">${icone}</span>
+      <div class="alerta-body">
+        <div class="alerta-nome">${c.nome}</div>
+        <div class="alerta-detalhe">
+          ${c.area} · ${c.adv}
+          ${c.docsObs ? ` · "${c.docsObs}"` : ''}
+          <br>${docsTexto}
+        </div>
+      </div>
+      <span class="alerta-badge ${badgeClass}">${badgeText}</span>
+      <button class="alerta-dismiss" onclick="dispensarAlerta(event,'${c.id}')" title="Dispensar">×</button>
+    </div>`;
+  }).join('');
+}
+
+function irParaPipeline(id) {
+  // Vai para a aba pipeline e abre o card
+  const tabBtn = document.getElementById('tab-btn-pipeline');
+  if(tabBtn) {
+    switchTab('pipeline', tabBtn);
+    tabBtn.classList.add('active');
+    document.querySelectorAll('#main-tabs .tab').forEach(t => {
+      if(t !== tabBtn) t.classList.remove('active');
+    });
+  }
+  setTimeout(() => openPipeEdit(id), 100);
+}
+
+const _dismissedAlerts = new Set();
+function dispensarAlerta(e, id) {
+  e.stopPropagation();
+  _dismissedAlerts.add(String(id));
+  // Remove visualmente o card do alerta
+  const card = pipeCards.find(c => String(c.id) === String(id));
+  if(card) {
+    // Temporariamente retira da lista de alertas sem mover o cliente
+    const el = e.target.closest('.alerta-docs');
+    if(el) { el.style.opacity='0'; el.style.transition='.3s'; setTimeout(()=>{ el.remove(); checkAletasEmpty(); },300); }
+  }
+}
+
+function checkAletasEmpty() {
+  const list = document.getElementById('alertas-list');
+  const empty = document.getElementById('alertas-empty');
+  if(list && !list.children.length) empty.classList.add('show');
+}
+
+// ============================================================
+// START
+// ============================================================
+init();
+</script>
+</body>
+</html>
