@@ -1,0 +1,15 @@
+{
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/sistema-mb.html", "dest": "/sistema-mb.html" },
+    { "src": "/financeiro-mb.html", "dest": "/financeiro-mb.html" },
+    { "src": "/pipeline-mb.html", "dest": "/pipeline-mb.html" },
+    { "src": "/pecas-mb.html", "dest": "/pecas-mb.html" },
+    {
+      "src": "/",
+      "has": [{ "type": "host", "value": "sistema.machadobalestro.com.br" }],
+      "dest": "/sistema-mb.html"
+    },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}
