@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Petições IA — Machado & Balestro</title>
+<style>
+:root{
+  --gold:#C9A84C;--gold-light:#E8C96A;--gold-dark:#A07830;
+  --bg:#0A0A0A;--bg2:#111111;--bg3:#1A1A1A;--bg4:#222222;
+  --border:#2A2A2A;--text:#F0F0F0;--text2:#A0A0A0;
+  --green:#2ECC71;--red:#E74C3C;--yellow:#F39C12;--blue:#3498DB;
+  --sidebar-w:260px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.logo-hex{width:40px;height:40px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#000;flex-shrink:0;}
+.logo-text strong{font-size:13px;color:var(--gold);display:block;}
+.logo-text span{font-size:10px;color:var(--text2);}
+.sidebar-nav{flex:1;padding:16px 0;overflow-y:auto;}
+.nav-section{padding:8px 20px 4px;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text2);margin-top:8px;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 20px;color:var(--text2);cursor:pointer;transition:.2s;font-size:13px;border-left:3px solid transparent;text-decoration:none;}
+.nav-item:hover{background:var(--bg3);color:var(--text);}
+.nav-item.active{background:rgba(201,168,76,.1);color:var(--gold);border-left-color:var(--gold);}
+.nav-item .icon{width:18px;text-align:center;flex-shrink:0;}
+.sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--text2);}
+
+/* MAIN */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar h1{font-size:18px;font-weight:700;}
+.topbar h1 span{color:var(--gold);}
+.content{padding:28px;flex:1;display:flex;gap:24px;align-items:flex-start;}
+
+/* PAINEL ESQUERDO — FORMULÁRIO */
+.form-panel{width:380px;flex-shrink:0;display:flex;flex-direction:column;gap:16px;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;}
+.card-title{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.card-title .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);}
+
+/* TIPO DE PEÇA */
+.tipo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.tipo-btn{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 10px;cursor:pointer;transition:.2s;text-align:center;}
+.tipo-btn:hover{border-color:var(--gold);}
+.tipo-btn.active{background:rgba(201,168,76,.12);border-color:var(--gold);color:var(--gold);}
+.tipo-btn .tipo-icon{font-size:22px;display:block;margin-bottom:5px;}
+.tipo-btn .tipo-label{font-size:11px;font-weight:700;display:block;}
+.tipo-btn .tipo-sub{font-size:10px;color:var(--text2);display:block;margin-top:2px;}
+
+/* FORM FIELDS */
+.fg{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.fg label{font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.fg input,.fg select,.fg textarea{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 13px;color:var(--text);font-size:13px;outline:none;transition:.2s;font-family:inherit;width:100%;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.08);}
+.fg textarea{resize:vertical;min-height:120px;line-height:1.6;}
+.fg .hint{font-size:11px;color:var(--text2);margin-top:3px;}
+
+/* BOTÃO GERAR */
+.btn-gerar{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#000;border:none;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.3px;}
+.btn-gerar:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,.3);}
+.btn-gerar:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+/* PAINEL DIREITO — RESULTADO */
+.result-panel{flex:1;min-width:0;display:flex;flex-direction:column;gap:16px;}
+.result-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;flex:1;}
+.result-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.result-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.result-actions{display:flex;gap:8px;}
+.btn{padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:.2s;display:inline-flex;align-items:center;gap:5px;}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2);}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+.btn-green{background:rgba(46,204,113,.15);border:1px solid var(--green);color:var(--green);}
+.btn-green:hover{background:rgba(46,204,113,.25);}
+.btn-blue{background:rgba(52,152,219,.15);border:1px solid var(--blue);color:var(--blue);}
+.btn-blue:hover{background:rgba(52,152,219,.25);}
+
+/* ÁREA DE TEXTO DO RESULTADO */
+.result-body{padding:0;min-height:500px;position:relative;}
+.result-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 32px;text-align:center;color:var(--text2);min-height:500px;}
+.result-empty .empty-icon{font-size:56px;margin-bottom:16px;opacity:.3;}
+.result-empty h3{font-size:18px;color:var(--text);margin-bottom:8px;font-weight:700;}
+.result-empty p{font-size:13px;line-height:1.6;max-width:380px;}
+#result-text{padding:28px 32px;font-size:13px;line-height:1.9;color:var(--text);white-space:pre-wrap;font-family:'Segoe UI',sans-serif;min-height:500px;}
+.cursor-blink{display:inline-block;width:2px;height:14px;background:var(--gold);animation:blink .8s infinite;vertical-align:middle;margin-left:2px;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* STATUS */
+.status-bar{display:flex;align-items:center;gap:10px;padding:10px 20px;background:var(--bg3);border-top:1px solid var(--border);font-size:12px;color:var(--text2);}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--text2);}
+.status-dot.generating{background:var(--gold);animation:pulse 1s infinite;}
+.status-dot.done{background:var(--green);}
+.status-dot.error{background:var(--red);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* HISTÓRICO */
+.hist-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:.15s;}
+.hist-item:hover{background:var(--bg3);}
+.hist-item:last-child{border-bottom:none;}
+.hist-icon{font-size:18px;flex-shrink:0;}
+.hist-info{flex:1;min-width:0;}
+.hist-tipo{font-size:12px;font-weight:700;color:var(--gold);}
+.hist-nome{font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hist-data{font-size:11px;color:var(--text2);flex-shrink:0;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);border:1px solid var(--gold);color:var(--text);padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transform:translateY(10px);transition:.3s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+/* SPINNER */
+.spinner{width:16px;height:16px;border:2px solid rgba(0,0,0,.3);border-top-color:#000;border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== SISTEMA DE DOCUMENTOS / JUNTADAS ===== */
+.editor-wrap{position:relative;}
+.editor-toolbar{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap;}
+.editor-tool{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:.15s;display:flex;align-items:center;gap:4px;}
+.editor-tool:hover{border-color:var(--gold);color:var(--gold);}
+.fatos-area{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 13px;color:var(--text);font-size:13px;outline:none;transition:.2s;font-family:inherit;resize:vertical;min-height:160px;line-height:1.7;}
+.fatos-area:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.08);}
+
+/* Docs list */
+.docs-lista{display:flex;flex-direction:column;gap:8px;margin-top:8px;}
+.doc-item{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:9px 12px;transition:.15s;}
+.doc-item:hover{border-color:var(--gold);}
+.doc-num{font-size:11px;font-weight:800;color:var(--gold);background:rgba(201,168,76,.15);border-radius:20px;padding:2px 8px;flex-shrink:0;}
+.doc-nome-input{flex:1;background:transparent;border:none;outline:none;font-size:12px;color:var(--text);font-family:inherit;min-width:0;}
+.doc-nome-input::placeholder{color:var(--text2);}
+.doc-file-info{font-size:10px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100px;flex-shrink:0;}
+.doc-insert-btn{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);color:var(--gold);border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0;white-space:nowrap;}
+.doc-insert-btn:hover{background:rgba(201,168,76,.25);}
+.doc-del-btn{background:none;border:none;color:var(--text2);cursor:pointer;font-size:14px;flex-shrink:0;padding:0 2px;transition:.15s;}
+.doc-del-btn:hover{color:var(--red);}
+.doc-add-btn{width:100%;background:none;border:1px dashed var(--border);border-radius:8px;padding:8px;color:var(--text2);font-size:12px;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;gap:5px;margin-top:4px;}
+.doc-add-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* Tag de juntada no texto */
+.juntada-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(52,152,219,.15);border:1px solid rgba(52,152,219,.35);border-radius:5px;padding:1px 7px;font-size:12px;color:#3498DB;font-weight:600;cursor:default;}
+
+/* Área de preview das juntadas */
+.juntadas-preview{background:var(--bg3);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:12px 14px;margin-top:8px;display:none;}
+.juntadas-preview.show{display:block;}
+.juntadas-preview-title{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:8px;}
+.juntada-preview-item{font-size:12px;color:var(--text2);padding:3px 0;display:flex;align-items:center;gap:6px;}
+.juntada-preview-item span{color:var(--text);}
+
+@media(max-width:1000px){.content{flex-direction:column;}.form-panel{width:100%;}}</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-hex">M&B</div>
+    <div class="logo-text">
+      <strong>Machado & Balestro</strong>
+      <span>Sistema Jurídico</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Principal</div>
+    <a href="sistema-mb.html" class="nav-item"><span class="icon">⬛</span> Dashboard</a>
+    <div class="nav-section">Captação</div>
+    <a href="pipeline-mb.html" class="nav-item"><span class="icon">🧲</span> Pipeline</a>
+    <a href="sistema-mb.html" class="nav-item"><span class="icon">💬</span> Leads do Site</a>
+    <div class="nav-section">Gestão</div>
+    <a href="sistema-mb.html" class="nav-item"><span class="icon">👤</span> Clientes</a>
+    <a href="sistema-mb.html" class="nav-item"><span class="icon">⚖️</span> Processos</a>
+    <a href="sistema-mb.html" class="nav-item"><span class="icon">📅</span> Prazos</a>
+    <a href="financeiro-mb.html" class="nav-item"><span class="icon">💰</span> Financeiro</a>
+    <div class="nav-section">IA</div>
+    <a href="pecas-mb.html" class="nav-item active"><span class="icon">📄</span> Gerar Petições</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div style="margin-bottom:4px;font-weight:700;color:var(--text);">Dr. Nicholas M. da Silva</div>
+    <div>OAB/RS 120.898</div>
+    <div style="margin-top:6px;">Dra. Munique K. Balestro</div>
+    <div>OAB/RS 107.903</div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <header class="topbar">
+    <h1>📄 Geração de <span>Petições com IA</span></h1>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <div id="api-status" style="font-size:12px;color:var(--text2);">Claude API</div>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- FORMULÁRIO -->
+    <div class="form-panel">
+
+      <!-- Tipo de peça -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Tipo de Peça</div>
+        <div class="tipo-grid">
+          <div class="tipo-btn active" onclick="setTipo('inicial',this)">
+            <span class="tipo-icon">📋</span>
+            <span class="tipo-label">Petição Inicial</span>
+            <span class="tipo-sub">Ingresso da ação</span>
+          </div>
+          <div class="tipo-btn" onclick="setTipo('contestacao',this)">
+            <span class="tipo-icon">🛡️</span>
+            <span class="tipo-label">Contestação</span>
+            <span class="tipo-sub">Réplica / Defesa</span>
+          </div>
+          <div class="tipo-btn" onclick="setTipo('recurso',this)">
+            <span class="tipo-icon">⚖️</span>
+            <span class="tipo-label">Recurso</span>
+            <span class="tipo-sub">Apelação / Agravo</span>
+          </div>
+          <div class="tipo-btn" onclick="setTipo('memorial',this)">
+            <span class="tipo-icon">📝</span>
+            <span class="tipo-label">Memorial</span>
+            <span class="tipo-sub">Alegações finais</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Partes -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Qualificação das Partes</div>
+        <div class="fg">
+          <label>Autor / Requerente *</label>
+          <input type="text" id="f-autor" placeholder="Nome completo do cliente">
+        </div>
+        <div class="fg">
+          <label>CPF / CNPJ do autor</label>
+          <input type="text" id="f-autor-cpf" placeholder="000.000.000-00">
+        </div>
+        <div class="fg">
+          <label>Réu / Requerido *</label>
+          <input type="text" id="f-reu" placeholder="Nome da parte contrária">
+        </div>
+        <div class="fg">
+          <label>Área jurídica *</label>
+          <select id="f-area">
+            <option value="">Selecione a área...</option>
+            <option value="trabalhista">Direito do Trabalho</option>
+            <option value="civil">Direito Civil</option>
+            <option value="consumidor">Direito do Consumidor</option>
+            <option value="familia">Direito de Família</option>
+            <option value="previdenciario">Direito Previdenciário</option>
+            <option value="bancario">Direito Bancário</option>
+            <option value="criminal">Direito Criminal</option>
+            <option value="imobiliario">Direito Imobiliário</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Advogado responsável</label>
+          <select id="f-adv">
+            <option value="nicholas">Dr. Nicholas Machado da Silva — OAB/RS 120.898</option>
+            <option value="munique">Dra. Munique Kovalski Balestro — OAB/RS 107.903</option>
+            <option value="ambos">Ambos os advogados</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Fatos e pedidos -->
+      <div class="card">
+        <div class="card-title"><span class="dot"></span> Descrição do Caso</div>
+
+        <!-- Editor de fatos com toolbar -->
+        <div class="fg">
+          <label>Resumo dos fatos e pedidos *</label>
+          <div class="editor-toolbar">
+            <button class="editor-tool" onclick="inserirJuntadaNoTexto()" title="Inserir referência a documento no texto">
+              📎 Inserir juntada
+            </button>
+            <button class="editor-tool" onclick="limparTexto()" title="Limpar campo">
+              🗑 Limpar
+            </button>
+          </div>
+          <textarea class="fatos-area" id="f-fatos"
+            placeholder="Descreva livremente o caso. Para referenciar um documento, clique em 📎 Inserir juntada ou use o botão ↗ no documento abaixo.&#10;&#10;Ex: Fulano de tal comprou uma passagem aérea no valor de R$ 1.200,00 [Doc 1 - Comprovante de compra da passagem], tendo o voo sido cancelado sem aviso prévio..."></textarea>
+          <div class="hint">💡 Use <strong>📎 Inserir juntada</strong> para referenciar documentos no meio do texto. A IA gera a peça já com as referências corretas.</div>
+        </div>
+
+        <!-- DOCUMENTOS / JUNTADAS -->
+        <div class="fg" style="margin-top:4px;">
+          <label>📎 Documentos / Juntadas</label>
+          <div class="docs-lista" id="docs-lista"></div>
+          <button class="doc-add-btn" onclick="addDoc()">
+            ＋ Adicionar documento
+            <input type="file" id="file-hidden" style="display:none" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onchange="onFileSelected(event)">
+          </button>
+        </div>
+
+        <!-- Preview das juntadas -->
+        <div class="juntadas-preview" id="juntadas-preview">
+          <div class="juntadas-preview-title">📋 Rol de documentos que serão mencionados na peça</div>
+          <div id="juntadas-preview-list"></div>
+        </div>
+
+        <div class="fg" style="margin-top:8px;">
+          <label>Comarca / Foro</label>
+          <input type="text" id="f-comarca" placeholder="Ex: Comarca de Tramandaí/RS">
+        </div>
+        <div class="fg">
+          <label>Valor da causa (R$)</label>
+          <input type="number" id="f-valor" placeholder="0,00" min="0" step="100">
+        </div>
+      </div>
+
+      <!-- Gerar -->
+      <button class="btn-gerar" id="btn-gerar" onclick="gerarPeca()">
+        ✨ Gerar Petição com IA
+      </button>
+
+    </div>
+
+    <!-- RESULTADO -->
+    <div class="result-panel">
+      <div class="result-card">
+        <div class="result-header">
+          <div class="result-title">
+            <span id="result-icon">📄</span>
+            <span id="result-title-text">Aguardando geração...</span>
+          </div>
+          <div class="result-actions" id="result-actions" style="display:none;">
+            <button class="btn btn-outline" onclick="copiarTexto()">📋 Copiar</button>
+            <button class="btn btn-blue" onclick="abrirGoogleDocs()">🌐 Google Docs</button>
+            <button class="btn btn-green" onclick="baixarDocx()">⬇️ DOCX</button>
+          </div>
+        </div>
+        <div class="result-body">
+          <div class="result-empty" id="result-empty">
+            <div class="empty-icon">⚖️</div>
+            <h3>Pronto para gerar sua petição</h3>
+            <p>Preencha o formulário ao lado com os dados do caso e clique em <strong>Gerar Petição com IA</strong>. A peça será redigida em tempo real.</p>
+          </div>
+          <div id="result-text" style="display:none;"></div>
+        </div>
+        <div class="status-bar" id="status-bar">
+          <div class="status-dot" id="status-dot"></div>
+          <span id="status-msg">Preencha o formulário para começar</span>
+          <span style="margin-left:auto;font-size:11px;" id="status-chars"></span>
+        </div>
+      </div>
+
+      <!-- Histórico -->
+      <div class="card" id="hist-card" style="display:none;">
+        <div class="card-title"><span class="dot"></span> Geradas nesta sessão</div>
+        <div id="hist-list"></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<!-- docx.js via CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.min.js"></script>
+
+<script>
+// ============================================================
+// CONFIG — chave guardada na Vercel, nunca no frontend
+// ============================================================
+const CLAUDE_MODEL = 'claude-sonnet-4-20250514';
+const PROXY_URL = '/api/claude'; // proxy Vercel — chave fica segura no servidor
+
+let tipoAtual = 'inicial';
+let textoPeca = '';
+let historico = [];
+
+// ============================================================
+// HELPERS
+// ============================================================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3500);
+}
+
+function setStatus(tipo, msg, chars='') {
+  const dot = document.getElementById('status-dot');
+  dot.className = 'status-dot' + (tipo?' '+tipo:'');
+  document.getElementById('status-msg').textContent = msg;
+  document.getElementById('status-chars').textContent = chars;
+}
+
+function setTipo(tipo, el) {
+  tipoAtual = tipo;
+  document.querySelectorAll('.tipo-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ============================================================
+// PROMPTS POR TIPO DE PEÇA
+// ============================================================
+const TIPOS = {
+  inicial: {label:'Petição Inicial', icon:'📋'},
+  contestacao: {label:'Contestação', icon:'🛡️'},
+  recurso: {label:'Recurso', icon:'⚖️'},
+  memorial: {label:'Memorial / Alegações Finais', icon:'📝'},
+};
+
+function buildPrompt(dados) {
+  const {tipo, autor, autorCpf, reu, area, adv, fatos, comarca, valor, juntadas} = dados;
+
+  const advTexto = {
+    nicholas: 'Dr. Nicholas Machado da Silva, OAB/RS 120.898',
+    munique:  'Dra. Munique Kovalski Balestro, OAB/RS 107.903',
+    ambos:    'Dr. Nicholas Machado da Silva, OAB/RS 120.898, e Dra. Munique Kovalski Balestro, OAB/RS 107.903',
+  }[adv];
+
+  const enderecoEscritorio = 'Rua Barão do Rio Branco, nº 119, loja 102, Centro, Tramandaí/RS';
+
+  const tipoLabels = {
+    inicial: 'PETIÇÃO INICIAL',
+    contestacao: 'CONTESTAÇÃO',
+    recurso: 'RECURSO DE APELAÇÃO',
+    memorial: 'MEMORIAL / ALEGAÇÕES FINAIS',
+  };
+
+  const instrucoesTipo = {
+    inicial: `Estrutura obrigatória:
+1. ENDEREÇAMENTO (Exmo. Sr. Dr. Juiz de Direito da... Vara... de ${comarca||'[Comarca]'})
+2. QUALIFICAÇÃO DO AUTOR (nome, CPF, endereço, advogado)
+3. QUALIFICAÇÃO DO RÉU
+4. DOS FATOS (narrativa clara e cronológica)
+5. DO DIREITO (fundamentos legais e jurisprudência pertinente)
+6. DOS PEDIDOS (numerados, específicos, com valor da causa)
+7. DO VALOR DA CAUSA (R$ ${valor||'[valor]'})
+8. FECHO E ASSINATURA`,
+
+    contestacao: `Estrutura obrigatória:
+1. ENDEREÇAMENTO
+2. PREAMBULO (processo nº, qualificação do contestante)
+3. PRELIMINARES (se houver: inépcia, ilegitimidade, prescrição etc.)
+4. NO MÉRITO (impugnar cada fato alegado pelo autor)
+5. DA IMPUGNAÇÃO AOS DOCUMENTOS
+6. DOS PEDIDOS (improcedência total ou parcial)
+7. FECHO E ASSINATURA`,
+
+    recurso: `Estrutura obrigatória:
+1. ENDEREÇAMENTO (Egrégio Tribunal)
+2. IDENTIFICAÇÃO DO RECORRENTE E RECORRIDO
+3. TEMPESTIVIDADE E PREPARO
+4. DOS FATOS E DA DECISÃO RECORRIDA
+5. DAS RAZÕES DO RECURSO (error in judicando / error in procedendo)
+6. DO DIREITO (fundamentos, jurisprudência dos Tribunais Superiores)
+7. DO PEDIDO (reforma ou anulação da decisão)
+8. FECHO E ASSINATURA`,
+
+    memorial: `Estrutura obrigatória:
+1. ENDEREÇAMENTO
+2. SÍNTESE DO PROCESSO
+3. DOS FATOS COMPROVADOS
+4. DO DIREITO APLICÁVEL
+5. DA ANÁLISE DAS PROVAS
+6. DAS CONCLUSÕES
+7. DO PEDIDO FINAL
+8. FECHO E ASSINATURA`,
+  };
+
+  return `Você é um advogado brasileiro especialista em ${area||'direito civil'}, redator de peças jurídicas de alto padrão técnico. 
+
+Redija uma ${tipoLabels[tipo]} completa, técnica e pronta para protocolo, com base nas informações abaixo.
+
+DADOS DO CASO:
+- Tipo de peça: ${tipoLabels[tipo]}
+- Área: ${area}
+- Autor/Requerente: ${autor}${autorCpf?' — CPF: '+autorCpf:''}
+- Réu/Requerido: ${reu}
+- Comarca/Foro: ${comarca||'[preencher]'}
+- Valor da causa: R$ ${valor||'[preencher]'}
+- Resumo dos fatos e pedidos: ${fatos}
+
+${juntadas.length ? `DOCUMENTOS JUNTADOS AOS AUTOS:
+${juntadas.map((j,i)=>`${i+1}. ${j.nome} (referenciado como [Doc ${j.id}] no texto)`).join('\n')}
+
+Ao redigir a peça, ao mencionar cada documento, use a expressão: "(conforme ${juntadas.length>1?'documento':'documento'} em anexo — [nome do doc])" ou equivalente técnico.
+Ao final da peça, inclua um ROL DE DOCUMENTOS listando todos os documentos acima numerados.
+` : ''}
+ADVOGADO(S) RESPONSÁVEL(IS): ${advTexto}
+Endereço do escritório: ${enderecoEscritorio}
+WhatsApp: (51) 98128-1795
+
+${instrucoesTipo[tipo]}
+
+REGRAS DE REDAÇÃO:
+- Use linguagem jurídica técnica e formal, padrão OAB
+- Fundamente com dispositivos do CPC/2015, CLT, CDC, CC/2002 e legislação específica da área
+- Cite jurisprudência relevante do STJ, TST ou TRT/TJRS quando pertinente
+- Nos pedidos, seja específico e numerado
+- Formate com espaçamento e parágrafos adequados para documento jurídico
+- Ao final, inclua local (Tramandaí/RS), data (${new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}) e assinatura do(s) advogado(s)
+- NÃO inclua [colchetes] ou lacunas no texto final — preencha com os dados fornecidos ou com indicação técnica adequada
+- Gere a peça COMPLETA, sem cortar ou resumir
+
+Gere agora a peça completa:`;
+}
+
+// ============================================================
+// GERAÇÃO VIA STREAMING
+// ============================================================
+async function gerarPeca() {
+  const autor   = document.getElementById('f-autor').value.trim();
+  const reu     = document.getElementById('f-reu').value.trim();
+  const area    = document.getElementById('f-area').value;
+  const fatos   = document.getElementById('f-fatos').value.trim();
+
+  if(!autor || !reu || !area || !fatos) {
+    showToast('⚠️ Preencha autor, réu, área e descrição do caso.');
+    return;
+  }
+
+  const dados = {
+    tipo: tipoAtual,
+    autor,
+    autorCpf: document.getElementById('f-autor-cpf').value.trim(),
+    reu,
+    area: document.getElementById('f-area').options[document.getElementById('f-area').selectedIndex].text,
+    adv: document.getElementById('f-adv').value,
+    fatos,
+    comarca: document.getElementById('f-comarca').value.trim(),
+    valor: document.getElementById('f-valor').value,
+    juntadas: getJuntadasParaPrompt(),
+  };
+
+  const prompt = buildPrompt(dados);
+  const tipo = TIPOS[tipoAtual];
+
+  // UI — início
+  const btn = document.getElementById('btn-gerar');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Gerando...';
+  document.getElementById('result-empty').style.display = 'none';
+  document.getElementById('result-text').style.display = 'block';
+  document.getElementById('result-text').innerHTML = '';
+  document.getElementById('result-actions').style.display = 'none';
+  document.getElementById('result-icon').textContent = tipo.icon;
+  document.getElementById('result-title-text').textContent = `${tipo.label} — ${autor}`;
+  setStatus('generating', 'Gerando com Claude AI...', '');
+  textoPeca = '';
+
+  try {
+    const response = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: CLAUDE_MODEL,
+        max_tokens: 4096,
+        stream: true,
+        messages: [{role:'user', content: prompt}]
+      })
+    });
+
+    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    const resultEl = document.getElementById('result-text');
+
+    while(true) {
+      const {done, value} = await reader.read();
+      if(done) break;
+
+      const chunk = decoder.decode(value);
+      const lines = chunk.split('\n').filter(l=>l.startsWith('data: '));
+
+      for(const line of lines) {
+        const data = line.replace('data: ','').trim();
+        if(data==='[DONE]') continue;
+        try {
+          const json = JSON.parse(data);
+          const delta = json.delta?.text || json.choices?.[0]?.delta?.content || '';
+          if(delta) {
+            textoPeca += delta;
+            resultEl.innerHTML = escapeHtml(textoPeca) + '<span class="cursor-blink"></span>';
+            resultEl.scrollTop = resultEl.scrollHeight;
+            setStatus('generating', 'Gerando...', `${textoPeca.length} caracteres`);
+          }
+        } catch(e) {}
+      }
+    }
+
+    // Finalizado
+    resultEl.innerHTML = escapeHtml(textoPeca);
+    setStatus('done', `Peça gerada com sucesso — ${textoPeca.length} caracteres`, `${Math.ceil(textoPeca.length/5)} palavras aprox.`);
+    document.getElementById('result-actions').style.display = 'flex';
+
+    // Adiciona ao histórico
+    historico.unshift({tipo:tipoAtual, label:tipo.label, icon:tipo.icon, autor, texto:textoPeca, data:new Date()});
+    renderHistorico();
+
+  } catch(e) {
+    setStatus('error', 'Erro ao gerar: ' + e.message);
+    document.getElementById('result-text').innerHTML = `<div style="color:var(--red);padding:20px;">❌ Erro: ${e.message}<br><br><small style="color:var(--text2);">Verifique se o proxy /api/claude está configurado na Vercel.</small></div>`;
+    showToast('❌ Erro na geração. Verifique o proxy.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '✨ Gerar Petição com IA';
+  }
+}
+
+function escapeHtml(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+// ============================================================
+// COPIAR
+// ============================================================
+async function copiarTexto() {
+  if(!textoPeca) return;
+  try {
+    await navigator.clipboard.writeText(textoPeca);
+    showToast('✅ Texto copiado para a área de transferência!');
+  } catch(e) {
+    showToast('Use Ctrl+A e Ctrl+C na área de texto.');
+  }
+}
+
+// ============================================================
+// ABRIR NO GOOGLE DOCS
+// ============================================================
+function abrirGoogleDocs() {
+  if(!textoPeca) return;
+  // Cria um blob e abre no Google Docs via URL de importação
+  const blob = new Blob([textoPeca], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  // Alternativa: abre Google Docs novo e instrui a colar
+  const win = window.open('https://docs.new', '_blank');
+  showToast('📋 Google Docs aberto! Cole o texto com Ctrl+V.');
+  // Copia para clipboard para facilitar
+  navigator.clipboard.writeText(textoPeca).catch(()=>{});
+}
+
+// ============================================================
+// DOWNLOAD DOCX
+// ============================================================
+async function baixarDocx() {
+  if(!textoPeca || !window.docx) { showToast('Aguarde o texto ser gerado.'); return; }
+
+  const {Document, Packer, Paragraph, TextRun, AlignmentType, HeadingLevel} = window.docx;
+
+  const autor = document.getElementById('f-autor').value.trim();
+  const tipo  = TIPOS[tipoAtual];
+  const adv   = document.getElementById('f-adv').value;
+
+  // Processa o texto em parágrafos
+  const linhas = textoPeca.split('\n');
+  const children = [];
+
+  // Cabeçalho do escritório
+  children.push(new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: {after:80},
+    children: [new TextRun({text:'MACHADO & BALESTRO ADVOCACIA E CONSULTORIA', bold:true, size:22, font:'Arial'})]
+  }));
+
+  const advLine = {
+    nicholas: 'Dr. Nicholas Machado da Silva — OAB/RS 120.898',
+    munique:  'Dra. Munique Kovalski Balestro — OAB/RS 107.903',
+    ambos:    'Dr. Nicholas Machado da Silva, OAB/RS 120.898 | Dra. Munique Kovalski Balestro, OAB/RS 107.903',
+  }[adv];
+
+  children.push(new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: {after:60},
+    children: [new TextRun({text: advLine, size:18, font:'Arial', color:'666666'})]
+  }));
+
+  children.push(new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: {after:60},
+    children: [new TextRun({text:'Rua Barão do Rio Branco, nº 119, loja 102, Centro, Tramandaí/RS', size:18, font:'Arial', color:'666666'})]
+  }));
+
+  children.push(new Paragraph({
+    alignment: AlignmentType.CENTER,
+    spacing: {after:480},
+    children: [new TextRun({text:'(51) 98128-1795 | machadobalestroadv@gmail.com', size:18, font:'Arial', color:'666666'})]
+  }));
+
+  // Processa cada linha do texto gerado
+  for(const linha of linhas) {
+    const txt = linha.trim();
+    if(!txt) {
+      children.push(new Paragraph({spacing:{after:120}}));
+      continue;
+    }
+
+    // Detecta títulos em maiúsculas (ex: "DOS FATOS", "DO DIREITO")
+    const isTitulo = txt === txt.toUpperCase() && txt.length > 4 && txt.length < 80 && /^[A-ZÁÉÍÓÚÂÊÔÃÕÀÇÜA-Z\s\-\/\.]+$/.test(txt);
+
+    if(isTitulo) {
+      children.push(new Paragraph({
+        spacing: {before:280, after:140},
+        children: [new TextRun({text: txt, bold:true, size:24, font:'Arial', underline:{}})]
+      }));
+    } else {
+      children.push(new Paragraph({
+        alignment: AlignmentType.JUSTIFIED,
+        spacing: {after:200},
+        indent: {firstLine: 720},
+        children: [new TextRun({text: txt, size:24, font:'Arial'})]
+      }));
+    }
+  }
+
+  const doc = new Document({
+    styles: {
+      default: {document: {run: {font:'Arial', size:24}}}
+    },
+    sections: [{
+      properties: {
+        page: {
+          size: {width:11906, height:16838},
+          margin: {top:1418, right:992, bottom:1418, left:1418}
+        }
+      },
+      children
+    }]
+  });
+
+  const buffer = await Packer.toBlob(doc);
+  const url = URL.createObjectURL(buffer);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${tipo.label.replace(/\s/g,'_')}_${autor.split(' ')[0]}_${new Date().toISOString().split('T')[0]}.docx`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✅ DOCX baixado com sucesso!');
+}
+
+// ============================================================
+// HISTÓRICO
+// ============================================================
+function renderHistorico() {
+  const card = document.getElementById('hist-card');
+  const list = document.getElementById('hist-list');
+  if(!historico.length) { card.style.display='none'; return; }
+  card.style.display = 'block';
+  list.innerHTML = historico.slice(0,5).map((h,i)=>`
+    <div class="hist-item" onclick="carregarHistorico(${i})">
+      <span class="hist-icon">${h.icon}</span>
+      <div class="hist-info">
+        <div class="hist-tipo">${h.label}</div>
+        <div class="hist-nome">${h.autor}</div>
+      </div>
+      <span class="hist-data">${h.data.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</span>
+    </div>`).join('');
+}
+
+function carregarHistorico(i) {
+  const h = historico[i];
+  if(!h) return;
+  textoPeca = h.texto;
+  tipoAtual = h.tipo;
+  document.getElementById('result-empty').style.display = 'none';
+  document.getElementById('result-text').style.display = 'block';
+  document.getElementById('result-text').innerHTML = escapeHtml(h.texto);
+  document.getElementById('result-icon').textContent = h.icon;
+  document.getElementById('result-title-text').textContent = `${h.label} — ${h.autor}`;
+  document.getElementById('result-actions').style.display = 'flex';
+  setStatus('done', `Peça carregada do histórico`, `${h.texto.length} caracteres`);
+}
+
+// ============================================================
+// SISTEMA DE DOCUMENTOS / JUNTADAS
+// ============================================================
+let docs = [];       // [{id, nome, file, ext}]
+let docIdSeq = 1;
+let docSelecionandoId = null; // doc aguardando file input
+
+function addDoc(etapa, fileObj) {
+  const id = docIdSeq++;
+  const doc = {id, nome:'', file: fileObj||null, ext: fileObj ? fileObj.name.split('.').pop().toUpperCase() : ''};
+  docs.push(doc);
+  renderDocs();
+  // Foca no input de nome do novo doc
+  setTimeout(()=>{
+    const el = document.getElementById(`doc-nome-${id}`);
+    if(el) el.focus();
+  }, 50);
+  return id;
+}
+
+function renderDocs() {
+  const lista = document.getElementById('docs-lista');
+  lista.innerHTML = docs.map(d => `
+    <div class="doc-item" id="doc-item-${d.id}">
+      <span class="doc-num">Doc ${d.id}</span>
+      <input class="doc-nome-input" id="doc-nome-${d.id}" type="text"
+        value="${escapeAttr(d.nome)}"
+        placeholder="Nome do documento (ex: Comprovante de compra)"
+        oninput="updateDocNome(${d.id}, this.value)"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();selecionarArquivo(${d.id});}">
+      ${d.file
+        ? `<span class="doc-file-info" title="${escapeAttr(d.file.name)}">📄 ${d.ext}</span>`
+        : `<button class="doc-insert-btn" onclick="selecionarArquivo(${d.id})">📁 Arquivo</button>`}
+      <button class="doc-insert-btn" onclick="inserirNoTexto(${d.id})" title="Inserir referência no texto">↗ texto</button>
+      <button class="doc-del-btn" onclick="removeDoc(${d.id})" title="Remover">×</button>
+    </div>`).join('');
+  renderPreview();
+}
+
+function escapeAttr(s) { return (s||'').replace(/"/g,'&quot;'); }
+
+function updateDocNome(id, val) {
+  const d = docs.find(x=>x.id===id);
+  if(d) { d.nome = val; renderPreview(); }
+}
+
+function removeDoc(id) {
+  docs = docs.filter(d=>d.id!==id);
+  // Remove referências do texto
+  const ta = document.getElementById('f-fatos');
+  // Regex para remover [Doc N - ...]
+  ta.value = ta.value.replace(new RegExp(`\\[Doc ${id}[^\\]]*\\]`,'g'), '');
+  renderDocs();
+}
+
+function selecionarArquivo(id) {
+  docSelecionandoId = id;
+  const inp = document.getElementById('file-hidden');
+  inp.value = '';
+  inp.click();
+}
+
+function onFileSelected(e) {
+  const file = e.target.files[0];
+  if(!file || docSelecionandoId===null) return;
+  const d = docs.find(x=>x.id===docSelecionandoId);
+  if(d) {
+    d.file = file;
+    d.ext  = file.name.split('.').pop().toUpperCase();
+    // Se nome ainda vazio, sugere pelo nome do arquivo (sem extensão, capitalizado)
+    if(!d.nome) {
+      d.nome = file.name.replace(/\.[^.]+$/,'').replace(/[-_]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+      const el = document.getElementById(`doc-nome-${d.id}`);
+      if(el) el.value = d.nome;
+    }
+  }
+  docSelecionandoId = null;
+  renderDocs();
+  showToast('📄 Arquivo vinculado! Dê um nome e clique ↗ texto para inserir.');
+}
+
+function inserirNoTexto(id) {
+  const d = docs.find(x=>x.id===id);
+  if(!d) return;
+  const nome = d.nome.trim() || `Documento ${id}`;
+  const tag  = `[Doc ${id} - ${nome}]`;
+  const ta   = document.getElementById('f-fatos');
+  const pos  = ta.selectionStart;
+  const antes = ta.value.substring(0, pos);
+  const depois = ta.value.substring(pos);
+  ta.value = antes + tag + depois;
+  ta.focus();
+  ta.selectionStart = ta.selectionEnd = pos + tag.length;
+  renderPreview();
+  showToast(`✅ "${nome}" inserido no texto.`);
+}
+
+function inserirJuntadaNoTexto() {
+  // Se não tem docs, cria um primeiro
+  if(!docs.length) {
+    const id = addDoc();
+    showToast('📎 Preencha o nome do documento e clique ↗ texto para inserir no caso.');
+    return;
+  }
+  // Se tem docs sem nome, avisa
+  const semNome = docs.filter(d=>!d.nome.trim());
+  if(semNome.length) {
+    showToast('⚠️ Dê um nome ao documento antes de inserir.');
+    document.getElementById(`doc-nome-${semNome[0].id}`).focus();
+    return;
+  }
+  // Insere o último doc adicionado
+  inserirNoTexto(docs[docs.length-1].id);
+}
+
+function limparTexto() {
+  if(confirm('Limpar o texto dos fatos?')) {
+    document.getElementById('f-fatos').value = '';
+  }
+}
+
+function renderPreview() {
+  const texto = document.getElementById('f-fatos').value;
+  const preview = document.getElementById('juntadas-preview');
+  const list = document.getElementById('juntadas-preview-list');
+
+  // Encontra todas as tags [Doc N - ...] no texto
+  const matches = [...texto.matchAll(/\[Doc (\d+)[^\]]*\]/g)];
+  const idsNoTexto = [...new Set(matches.map(m=>+m[1]))];
+
+  const docsNoTexto = idsNoTexto.map(id=>docs.find(d=>d.id===id)).filter(Boolean);
+
+  if(!docsNoTexto.length) {
+    preview.classList.remove('show');
+    return;
+  }
+
+  preview.classList.add('show');
+  list.innerHTML = docsNoTexto.map((d,i)=>`
+    <div class="juntada-preview-item">
+      <span style="color:var(--gold);font-weight:700;">${i+1}.</span>
+      <span>${d.nome||'(sem nome)'}</span>
+      ${d.file ? `<span style="font-size:10px;color:var(--text2);">(${d.ext})</span>` : `<span style="font-size:10px;color:var(--yellow);">⚠️ sem arquivo</span>`}
+    </div>`).join('');
+}
+
+// Adiciona listener para atualizar preview em tempo real ao digitar
+document.addEventListener('DOMContentLoaded', ()=>{
+  const ta = document.getElementById('f-fatos');
+  if(ta) ta.addEventListener('input', renderPreview);
+});
+
+// Extrai lista de juntadas referenciadas no texto para o prompt
+function getJuntadasParaPrompt() {
+  const texto = document.getElementById('f-fatos').value;
+  const matches = [...texto.matchAll(/\[Doc (\d+) - ([^\]]+)\]/g)];
+  const vistos = new Set();
+  const lista = [];
+  for(const m of matches) {
+    const id = +m[1];
+    if(!vistos.has(id)) {
+      vistos.add(id);
+      lista.push({id, nome: m[2]});
+    }
+  }
+  return lista;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.getElementById('api-status').innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.3);border-radius:20px;padding:4px 12px;color:#2ECC71;font-weight:600;">
+  <span style="width:6px;height:6px;border-radius:50%;background:#2ECC71;animation:pulse 1.5s infinite;display:inline-block;"></span> Claude Sonnet 4
+</span>`;
+</script>
+</body>
+</html>
