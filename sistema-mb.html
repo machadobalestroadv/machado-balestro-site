@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)file:///C:/Users/Nick/Downloads/sistema-mb_1.html -->
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M&amp;B · Sistema Jurídico</title>
+<link href="./sistema-mb_files/css2" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--ouro:#B8960C;--ouro-claro:#D4AF37;--ouro-brilho:#F0CC50;--preto:#050505;--bg:#0A0A0A;--card:#111;--card2:#161616;--borda:rgba(184,150,12,0.12);--borda2:rgba(255,255,255,0.06);--texto:#F0EDE6;--texto2:#888;--texto3:#444;}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--texto);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--ouro);border-radius:2px}
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--preto);padding:20px;position:fixed;inset:0;z-index:500;}
+#loginScreen::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(184,150,12,0.06) 0%,transparent 70%);pointer-events:none}
+.login-card{width:100%;max-width:420px;background:var(--card);border:0.5px solid var(--borda);border-radius:20px;padding:48px 40px;position:relative;z-index:1;animation:cardIn 0.5s cubic-bezier(.16,1,.3,1)}
+@keyframes cardIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.login-logo{font-family:"Cormorant Garamond",serif;font-size:26px;font-weight:400;text-align:center;color:var(--texto)}
+.login-logo span{color:var(--ouro-claro)}
+.login-sub{font-size:11px;color:var(--texto3);letter-spacing:2px;text-transform:uppercase;text-align:center;margin-top:4px}
+.login-div{width:40px;height:1px;background:linear-gradient(90deg,transparent,var(--ouro),transparent);margin:24px auto}
+.login-title{font-family:"Cormorant Garamond",serif;font-size:20px;font-weight:400;text-align:center;margin-bottom:24px}
+.login-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--ouro),var(--ouro-brilho));color:var(--preto);border:none;border-radius:10px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.3s;margin-top:8px}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(184,150,12,0.3)}
+.login-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.login-error{background:rgba(123,45,45,0.3);border:0.5px solid rgba(248,113,113,0.2);border-radius:8px;padding:10px 14px;font-size:12px;color:#FCA5A5;margin-top:12px;text-align:center}
+.login-footer{text-align:center;margin-top:28px;font-size:11px;color:var(--texto3)}
+#app{display:none}
+.layout{display:flex;height:100vh}
+.sidebar{width:240px;flex-shrink:0;background:var(--preto);border-right:0.5px solid var(--borda);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100}
+.main{margin-left:240px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.sb-hdr{padding:28px 24px 20px;border-bottom:0.5px solid var(--borda)}
+.sb-logo{font-family:"Cormorant Garamond",serif;font-size:20px;font-weight:500;color:var(--texto)}
+.sb-logo span{color:var(--ouro-claro)}
+.sb-sub{font-size:11px;color:var(--texto3);margin-top:2px}
+.sb-nav{padding:16px 12px;flex:1;overflow-y:auto}
+.sb-sec{font-size:9px;font-weight:500;letter-spacing:2px;color:var(--texto3);text-transform:uppercase;padding:0 12px;margin:16px 0 6px}
+.sb-i{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:13px;font-weight:300;color:var(--texto2);cursor:pointer;transition:all 0.2s;margin-bottom:2px;border:none;background:none;width:100%;text-align:left}
+.sb-i:hover{background:rgba(184,150,12,0.06);color:var(--texto)}
+.sb-i.on{background:rgba(184,150,12,0.1);color:var(--ouro-claro)}
+.sb-b{margin-left:auto;font-size:10px;padding:2px 7px;border-radius:100px}
+.sb-bg{background:rgba(184,150,12,0.15);color:var(--ouro-claro)}
+.sb-br{background:rgba(248,113,113,0.15);color:#F87171}
+.sb-ft{padding:16px 24px;border-top:0.5px solid var(--borda)}
+.sb-usr{display:flex;align-items:center;gap:10px}
+.sb-av{width:32px;height:32px;border-radius:50%;background:rgba(184,150,12,0.15);border:0.5px solid var(--ouro);display:flex;align-items:center;justify-content:center;font-family:"Cormorant Garamond",serif;font-size:12px;color:var(--ouro-claro);flex-shrink:0}
+.sb-ui{flex:1;min-width:0}
+.sb-un{font-size:12px;font-weight:400;color:var(--texto);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-ur{font-size:10px;color:var(--texto3)}
+.sb-lo{width:28px;height:28px;border-radius:6px;background:none;border:0.5px solid var(--borda2);color:var(--texto3);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0}
+.sb-lo:hover{border-color:rgba(248,113,113,0.3);color:#FCA5A5}
+.topbar{height:60px;background:rgba(10,10,10,0.95);backdrop-filter:blur(20px);border-bottom:0.5px solid var(--borda2);display:flex;align-items:center;padding:0 32px;gap:12px;position:sticky;top:0;z-index:50}
+.tb-title{font-family:"Cormorant Garamond",serif;font-size:18px;font-weight:400;flex:1}
+.tb-title span{color:var(--texto3);font-size:14px;margin-left:8px}
+.sbox{display:flex;align-items:center;gap:8px;background:var(--card);border:0.5px solid var(--borda2);border-radius:8px;padding:0 12px;width:260px;transition:border-color 0.2s}
+.sbox:focus-within{border-color:rgba(184,150,12,0.3)}
+.sinp{background:none;border:none;outline:none;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:300;color:var(--texto);height:36px;flex:1}
+.sinp::placeholder{color:var(--texto3)}
+.btn{display:flex;align-items:center;gap:7px;padding:9px 18px;border-radius:8px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:400;cursor:pointer;border:none;transition:all 0.2s;white-space:nowrap}
+.btn-g{background:var(--ouro);color:var(--preto)}.btn-g:hover{background:var(--ouro-claro);transform:translateY(-1px)}
+.btn-o{background:transparent;color:var(--texto2);border:0.5px solid var(--borda2)}.btn-o:hover{border-color:var(--ouro);color:var(--ouro-claro)}
+.content{padding:28px 32px;flex:1}
+.pg{display:none}.pg.on{display:block}
+.mets{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.met{background:var(--card);border:0.5px solid var(--borda2);border-radius:12px;padding:20px 22px;transition:border-color 0.3s;cursor:pointer}
+.met:hover{border-color:var(--borda)}
+.met-l{font-size:11px;font-weight:300;letter-spacing:1px;color:var(--texto3);text-transform:uppercase;margin-bottom:8px}
+.met-v{font-family:"Cormorant Garamond",serif;font-size:32px;font-weight:400;color:var(--ouro-claro);line-height:1;margin-bottom:4px}
+.met-v.r{color:#F87171}.met-v.g{color:#4ADE80}
+.met-s{font-size:11px;color:var(--texto3)}
+.filts{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.filt{padding:6px 14px;border-radius:100px;font-size:12px;font-weight:300;border:0.5px solid var(--borda2);background:transparent;color:var(--texto2);cursor:pointer;transition:all 0.2s}
+.filt:hover{border-color:var(--ouro);color:var(--ouro-claro)}
+.filt.on{background:rgba(184,150,12,0.1);border-color:var(--ouro);color:var(--ouro-claro)}
+.fsel{padding:6px 14px;border-radius:100px;font-size:12px;font-weight:300;border:0.5px solid var(--borda2);background:var(--card);color:var(--texto2);cursor:pointer;outline:none;font-family:"DM Sans",sans-serif}
+.tw{background:var(--card);border:0.5px solid var(--borda2);border-radius:12px;overflow:hidden}
+.th{padding:12px 20px;border-bottom:0.5px solid var(--borda2);font-size:10px;font-weight:500;letter-spacing:1.5px;color:var(--texto3);text-transform:uppercase;display:grid}
+.tr{padding:14px 20px;border-bottom:0.5px solid rgba(255,255,255,0.03);align-items:center;cursor:pointer;transition:background 0.15s;display:grid;animation:rIn 0.3s ease both}
+@keyframes rIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.tr:hover{background:rgba(184,150,12,0.04)}.tr:last-child{border-bottom:none}
+.gc{grid-template-columns:2fr 1.2fr 1fr 0.8fr 0.8fr 0.5fr}
+.gp{grid-template-columns:2.5fr 1.5fr 1fr 1fr 0.8fr 0.5fr}
+.gpr{grid-template-columns:1.5fr 2fr 1fr 0.8fr 0.8fr 0.5fr}
+.ti{display:flex;align-items:center;gap:12px}
+.tav{width:34px;height:34px;border-radius:8px;flex-shrink:0;background:rgba(184,150,12,0.1);border:0.5px solid rgba(184,150,12,0.2);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--ouro-claro);font-weight:500}
+.tn{font-size:13px;font-weight:400;color:var(--texto);margin-bottom:2px}
+.ts{font-size:11px;color:var(--texto3)}
+.acoes{display:flex;gap:6px;justify-content:flex-end}
+.ab{width:28px;height:28px;border-radius:6px;background:none;border:0.5px solid var(--borda2);color:var(--texto3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all 0.2s}
+.ab:hover{border-color:var(--ouro);color:var(--ouro-claro)}
+.empty{padding:60px 20px;text-align:center}
+.ei{font-size:40px;margin-bottom:16px;opacity:0.3}
+.et{font-family:"Cormorant Garamond",serif;font-size:22px;font-weight:400;color:var(--texto2);margin-bottom:8px}
+.es{font-size:13px;color:var(--texto3)}
+.lr{padding:14px 20px;border-bottom:0.5px solid rgba(255,255,255,0.03);display:grid;gap:12px}
+.sk{height:14px;border-radius:4px;background:linear-gradient(90deg,var(--card2) 0%,rgba(255,255,255,0.04) 50%,var(--card2) 100%);background-size:200% 100%;animation:sh 1.5s infinite}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.pag{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-top:0.5px solid var(--borda2)}
+.pi{font-size:12px;color:var(--texto3)}
+.pbs{display:flex;gap:6px}
+.pb{width:30px;height:30px;border-radius:6px;background:none;border:0.5px solid var(--borda2);color:var(--texto2);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.pb:hover{border-color:var(--ouro);color:var(--ouro-claro)}.pb:disabled{opacity:0.3;cursor:not-allowed}
+.pn{padding:0 10px;height:30px;border-radius:6px;background:rgba(184,150,12,0.1);border:0.5px solid var(--ouro);color:var(--ouro-claro);font-size:12px;display:flex;align-items:center}
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:400;letter-spacing:0.5px;padding:3px 10px;border-radius:100px}
+.ba{background:rgba(20,80,40,0.4);color:#4ADE80;border:0.5px solid rgba(74,222,128,0.15)}
+.bi{background:rgba(60,20,20,0.4);color:#F87171;border:0.5px solid rgba(248,113,113,0.15)}
+.bp{background:rgba(60,60,20,0.4);color:#FCD34D;border:0.5px solid rgba(252,211,77,0.15)}
+.bsu{background:rgba(60,60,20,0.4);color:#FCD34D;border:0.5px solid rgba(252,211,77,0.15)}
+.bar{background:rgba(40,40,40,0.6);color:#888;border:0.5px solid rgba(136,136,136,0.15)}
+.be{background:rgba(60,20,20,0.4);color:#F87171;border:0.5px solid rgba(248,113,113,0.15)}
+.bpe{background:rgba(30,58,95,0.5);color:#60A5FA;border:0.5px solid rgba(96,165,250,0.2)}
+.bc{background:rgba(20,80,40,0.4);color:#4ADE80;border:0.5px solid rgba(74,222,128,0.15)}
+.bv{background:rgba(80,20,20,0.5);color:#F87171;border:0.5px solid rgba(248,113,113,0.2)}
+.bh{background:rgba(184,150,12,0.2);color:var(--ouro-brilho);border:0.5px solid rgba(184,150,12,0.3)}
+.bam{background:rgba(80,50,20,0.4);color:#FB923C;border:0.5px solid rgba(251,146,60,0.2)}
+.bu{background:rgba(100,20,20,0.5);color:#FCA5A5;border:0.5px solid rgba(252,165,165,0.2)}
+.bbank{background:rgba(30,58,95,0.5);color:#60A5FA;border:0.5px solid rgba(96,165,250,0.2)}
+.bfam{background:rgba(80,30,95,0.5);color:#C084FC;border:0.5px solid rgba(192,132,252,0.2)}
+.bimob{background:rgba(20,80,50,0.5);color:#4ADE80;border:0.5px solid rgba(74,222,128,0.2)}
+.bcons{background:rgba(95,50,20,0.5);color:#FB923C;border:0.5px solid rgba(251,146,60,0.2)}
+.bprev{background:rgba(80,70,20,0.5);color:#FCD34D;border:0.5px solid rgba(252,211,77,0.2)}
+.btrab{background:rgba(30,70,80,0.5);color:#22D3EE;border:0.5px solid rgba(34,211,238,0.2)}
+.pd{font-size:12px;font-weight:500;padding:3px 10px;border-radius:100px}
+.pdv{color:#4ADE80;background:rgba(20,80,40,0.3);border:0.5px solid rgba(74,222,128,0.15)}
+.pda{color:#FCD34D;background:rgba(60,60,20,0.3);border:0.5px solid rgba(252,211,77,0.15)}
+.pdl{color:#FB923C;background:rgba(80,50,20,0.3);border:0.5px solid rgba(251,146,60,0.15)}
+.pdr{color:#F87171;background:rgba(80,20,20,0.3);border:0.5px solid rgba(248,113,113,0.15)}
+.ag-wrap{display:grid;grid-template-columns:1fr 300px;gap:16px;margin-bottom:28px}
+.ag-card{background:var(--card);border:0.5px solid var(--borda2);border-radius:12px;overflow:hidden}
+.ag-hdr{padding:16px 20px;border-bottom:0.5px solid var(--borda2);display:flex;align-items:center;justify-content:space-between}
+.ag-title{font-family:"Cormorant Garamond",serif;font-size:16px;font-weight:400}
+.ag-i{padding:14px 20px;border-bottom:0.5px solid rgba(255,255,255,0.03);cursor:pointer;transition:background 0.15s}
+.ag-i:hover{background:rgba(184,150,12,0.04)}.ag-i:last-child{border-bottom:none}
+.ag-it{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px}
+.ag-id{font-size:13px;color:var(--texto)}
+.ag-ip{font-size:11px;color:var(--texto3);margin-bottom:5px}
+.res-card{background:var(--card);border:0.5px solid var(--borda2);border-radius:12px;padding:20px}
+.res-t{font-family:"Cormorant Garamond",serif;font-size:16px;font-weight:400;margin-bottom:20px}
+.res-i{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid var(--borda2)}
+.res-i:last-child{border-bottom:none}
+.res-l{font-size:12px;color:var(--texto2)}
+.res-v{font-family:"Cormorant Garamond",serif;font-size:22px;font-weight:400;color:var(--ouro-claro)}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fi 0.2s ease}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.md{background:var(--card);border:0.5px solid var(--borda);border-radius:16px;width:100%;max-width:660px;max-height:92vh;overflow-y:auto;animation:mi 0.3s cubic-bezier(.16,1,.3,1)}
+.md-sm{max-width:480px}
+@keyframes mi{from{opacity:0;transform:scale(0.95) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.mh{padding:24px 28px 20px;border-bottom:0.5px solid var(--borda2);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--card);z-index:1}
+.mt{font-family:"Cormorant Garamond",serif;font-size:20px;font-weight:400}
+.mc{width:32px;height:32px;border-radius:8px;background:none;border:0.5px solid var(--borda2);color:var(--texto2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all 0.2s}
+.mc:hover{border-color:var(--ouro);color:var(--ouro-claro)}
+.mb{padding:24px 28px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ff{grid-column:1/-1}
+.fgrp{display:flex;flex-direction:column;gap:6px}
+.fl{font-size:10px;font-weight:400;letter-spacing:0.5px;color:var(--texto3);text-transform:uppercase}
+.fi2{background:var(--card2);border:0.5px solid var(--borda2);border-radius:8px;padding:10px 14px;color:var(--texto);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:300;outline:none;transition:border-color 0.2s;width:100%}
+.fi2:focus{border-color:rgba(184,150,12,0.4)}.fi2::placeholder{color:var(--texto3)}
+.fs{background:var(--card2);border:0.5px solid var(--borda2);border-radius:8px;padding:10px 14px;color:var(--texto);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:300;outline:none;transition:border-color 0.2s;cursor:pointer;width:100%}
+.fs:focus{border-color:rgba(184,150,12,0.4)}
+.fta{background:var(--card2);border:0.5px solid var(--borda2);border-radius:8px;padding:10px 14px;color:var(--texto);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:300;outline:none;transition:border-color 0.2s;resize:vertical;min-height:80px;width:100%}
+.fta:focus{border-color:rgba(184,150,12,0.4)}
+.mf{padding:20px 28px;border-top:0.5px solid var(--borda2);display:flex;gap:10px;justify-content:flex-end;position:sticky;bottom:0;background:var(--card)}
+.toast{position:fixed;bottom:24px;right:24px;z-index:300;background:var(--card);border:0.5px solid var(--borda);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:10px;font-size:13px;box-shadow:0 8px 32px rgba(0,0,0,0.5);animation:ti 0.3s cubic-bezier(.16,1,.3,1);max-width:340px}
+@keyframes ti{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){.sidebar{width:200px}.main{margin-left:200px}.mets{grid-template-columns:repeat(2,1fr)}.ag-wrap{grid-template-columns:1fr}}
+/* ── ALERTAS DOCS PENDENTES ── */
+.al-wrap{margin-bottom:24px}
+.al-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.al-tit{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:500;letter-spacing:1.5px;color:#F39C12;text-transform:uppercase}
+.al-pulse{width:7px;height:7px;border-radius:50%;background:#F39C12;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.al-link{font-size:12px;color:var(--ouro-claro);text-decoration:none;opacity:.7;transition:.2s}
+.al-link:hover{opacity:1}
+.al-card{display:flex;align-items:center;gap:14px;background:var(--card);border:0.5px solid rgba(243,156,18,.25);border-left:3px solid #F39C12;border-radius:10px;padding:13px 16px;margin-bottom:8px;cursor:pointer;transition:.15s;text-decoration:none}
+.al-card:hover{background:var(--card2);border-color:rgba(243,156,18,.5)}
+.al-card.urg{border-left-color:#F87171;border-color:rgba(248,113,113,.25)}
+.al-card.urg:hover{border-color:rgba(248,113,113,.5)}
+.al-ic{font-size:18px;flex-shrink:0}
+.al-body{flex:1;min-width:0}
+.al-nome{font-size:13px;font-weight:400;color:var(--texto)}
+.al-sub{font-size:11px;color:var(--texto3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.al-badge{font-size:10px;font-weight:500;padding:3px 10px;border-radius:100px;white-space:nowrap;flex-shrink:0}
+.al-badge.w{background:rgba(243,156,18,.12);color:#F39C12;border:0.5px solid rgba(243,156,18,.25)}
+.al-badge.d{background:rgba(248,113,113,.12);color:#F87171;border:0.5px solid rgba(248,113,113,.25)}
+.al-ok{display:none;align-items:center;gap:10px;background:rgba(74,222,128,.06);border:0.5px solid rgba(74,222,128,.15);border-radius:10px;padding:12px 16px;font-size:12px;color:#4ADE80}
+.al-ok.show{display:flex}
+</style>
+</head>
+<body>
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">Machado <span>&amp;</span> Balestro</div>
+    <div class="login-sub">Sistema Jurídico</div>
+    <div class="login-div"></div>
+
+    <!-- TELA DE LOGIN -->
+    <div id="telaLogin">
+      <div class="login-title">Acesso restrito</div>
+      <div style="margin-bottom:16px"><label class="fl" style="display:block;margin-bottom:6px">E-mail</label><input class="fi2" id="lEmail" type="email" placeholder="seu@email.com"></div>
+      <div><label class="fl" style="display:block;margin-bottom:6px">Senha</label><input class="fi2" id="lSenha" type="password" placeholder="••••••••" onkeypress="if(event.key===&#39;Enter&#39;)login()"></div>
+      <button class="login-btn" id="lBtn" onclick="login()">Entrar no sistema</button>
+      <div class="login-error" id="lErr" style="display:none"></div>
+      <div style="text-align:center;margin-top:16px">
+        <span onclick="mostrarReset()" style="font-size:12px;color:var(--texto3);text-decoration:none;transition:.2s;cursor:pointer;display:block;text-align:center;margin-top:16px;" onmouseover="this.style.color='var(--ouro-claro)'" onmouseout="this.style.color='var(--texto3)'">Esqueci minha senha</span>
+      </div>
+    </div>
+
+    <!-- TELA DE SOLICITAR RESET -->
+    <div id="telaReset" style="display:none">
+      <div class="login-title">Redefinir senha</div>
+      <div style="margin-bottom:16px"><label class="fl" style="display:block;margin-bottom:6px">E-mail</label><input class="fi2" id="rEmail" type="email" placeholder="seu@email.com"></div>
+      <button class="login-btn" id="rBtn" onclick="solicitarReset()">Enviar link de redefinição</button>
+      <div class="login-error" id="rMsg" style="display:none"></div>
+      <div style="text-align:center;margin-top:16px">
+        <span onclick="mostrarLogin()" style="font-size:12px;color:var(--texto3);text-decoration:none;cursor:pointer;display:block;text-align:center;margin-top:16px;" onmouseover="this.style.color='var(--ouro-claro)'" onmouseout="this.style.color='var(--texto3)'">← Voltar ao login</span>
+      </div>
+    </div>
+
+    <!-- TELA DE NOVA SENHA (após clicar no link do e-mail) -->
+    <div id="telaNovaSenha" style="display:none">
+      <div class="login-title">Criar nova senha</div>
+      <div style="margin-bottom:16px"><label class="fl" style="display:block;margin-bottom:6px">Nova senha</label><input class="fi2" id="nSenha" type="password" placeholder="••••••••"></div>
+      <div style="margin-bottom:16px"><label class="fl" style="display:block;margin-bottom:6px">Confirmar senha</label><input class="fi2" id="nSenha2" type="password" placeholder="••••••••" onkeypress="if(event.key===&#39;Enter&#39;)definirNovaSenha()"></div>
+      <button class="login-btn" id="nBtn" onclick="definirNovaSenha()">Salvar nova senha</button>
+      <div class="login-error" id="nMsg" style="display:none"></div>
+    </div>
+
+    <div class="login-footer">Machado &amp; Balestro Advocacia · Tramandaí/RS</div>
+  </div>
+</div>
+
+<div id="app">
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sb-hdr">
+      <div class="sb-logo">Machado <span>&amp;</span> Balestro</div>
+      <div class="sb-sub">Sistema Jurídico</div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-sec">Principal</div>
+      <button class="sb-i" onclick="ir(&#39;dashboard&#39;)">⬛ Dashboard</button>
+      <div class="sb-sec">Gestão</div>
+      <button class="sb-i" onclick="ir(&#39;clientes&#39;)">👤 Clientes <span class="sb-b sb-bg" id="bCli">—</span></button>
+      <button class="sb-i" onclick="ir(&#39;processos&#39;)">⚖️ Processos <span class="sb-b sb-bg" id="bProc">—</span></button>
+      <button class="sb-i" onclick="ir(&#39;prazos&#39;)">📅 Prazos <span class="sb-b sb-br" id="bPraz">—</span></button>
+      <button class="sb-i" onclick="window.location.href=&#39;financeiro-mb.html&#39;">💰 Financeiro</button>
+      <div class="sb-sec">IA</div>
+      <button class="sb-i" onclick="window.location.href=&#39;pecas-mb.html&#39;">📄 Gerar Petições</button>
+      <div class="sb-sec">Captação</div>
+      <button class="sb-i" onclick="window.location.href=&#39;pipeline-mb.html&#39;">🧲 Pipeline de Clientes</button>
+      <button class="sb-i" onclick="ir(&#39;leads&#39;)">💬 Leads Site <span class="sb-b sb-bg" id="bLead">—</span></button>
+    </nav>
+    <div class="sb-ft">
+      <div class="sb-usr">
+        <div class="sb-av" id="sAv">—</div>
+        <div class="sb-ui"><div class="sb-un" id="sNm">—</div><div class="sb-ur" id="sRl">—</div></div>
+        <button class="sb-lo" onclick="logout()" title="Sair">↩</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="tb-title" id="tbT">Sistema</div>
+      <div class="sbox" id="sBox" style="display:none"><span style="font-size:13px;color:var(--texto3)">🔍</span><input class="sinp" id="sInp" placeholder="Buscar..." oninput="onSearch()"></div>
+      <button class="btn btn-o" id="btnAtt" onclick="attPag()" style="display:none">↺</button>
+      <button class="btn btn-g" id="btnN" onclick="abrirN()" style="display:none">+ Novo</button>
+    </div>
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="pg on" id="pgdashboard">
+        <div class="mets">
+          <div class="met" onclick="ir(&#39;clientes&#39;)"><div class="met-l">Clientes ativos</div><div class="met-v" id="dCli">—</div><div class="met-s">Total cadastrados</div></div>
+          <div class="met" onclick="ir(&#39;processos&#39;)"><div class="met-l">Processos ativos</div><div class="met-v" id="dProc">—</div><div class="met-s">Em andamento</div></div>
+          <div class="met" onclick="ir(&#39;prazos&#39;)"><div class="met-l">Prazos urgentes</div><div class="met-v r" id="dUrg">—</div><div class="met-s">Próximos 3 dias</div></div>
+          <div class="met" onclick="ir(&#39;leads&#39;)"><div class="met-l">Leads site</div><div class="met-v" id="dLead">—</div><div class="met-s">Aguardando contato</div></div>
+        </div>
+        <div class="ag-wrap">
+          <div class="ag-card">
+            <div class="ag-hdr"><div class="ag-title">Próximos prazos</div><button class="btn btn-o" style="padding:6px 14px;font-size:11px" onclick="ir(&#39;prazos&#39;)">Ver todos →</button></div>
+            <div id="agLst"></div>
+          </div>
+          <div class="res-card">
+            <div class="res-t">Resumo do escritório</div>
+            <div class="res-i"><span class="res-l">Processos ativos</span><span class="res-v" id="rProc">—</span></div>
+            <div class="res-i"><span class="res-l">Prazos este mês</span><span class="res-v" id="rPMes">—</span></div>
+            <div class="res-i"><span class="res-l">Clientes novos (mês)</span><span class="res-v" id="rCMes">—</span></div>
+            <div class="res-i"><span class="res-l">Dr. Nicholas</span><span class="res-v" id="rNick">—</span></div>
+            <div class="res-i"><span class="res-l">Dra. Munique</span><span class="res-v" id="rMun">—</span></div>
+
+            <!-- ALERTAS DOCS PENDENTES -->
+            <div class="al-wrap" id="al-wrap" style="margin-top:20px;display:none">
+              <div class="al-hdr">
+                <div class="al-tit"><span class="al-pulse"></span> Docs pendentes</div>
+                <a class="al-link" href="file:///C:/Users/Nick/Downloads/financeiro-mb.html">Pipeline →</a>
+              </div>
+              <div id="al-list"></div>
+              <div class="al-ok" id="al-ok">✅ Nenhum cliente aguardando docs.</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- CLIENTES -->
+      <div class="pg" id="pgclientes">
+        <div class="mets"><div class="met"><div class="met-l">Total</div><div class="met-v" id="mcT">—</div><div class="met-s">Cadastrados</div></div><div class="met"><div class="met-l">Ativos</div><div class="met-v g" id="mcA">—</div><div class="met-s">Em andamento</div></div><div class="met"><div class="met-l">Este mês</div><div class="met-v" id="mcM">—</div><div class="met-s">Novos</div></div><div class="met"><div class="met-l">Leads site</div><div class="met-v" id="mcL">—</div><div class="met-s">Aguardando</div></div></div>
+        <div class="filts">
+          <button class="filt on" data-cs="todos" onclick="fCli(this)">Todos</button>
+          <button class="filt" data-cs="ativo" onclick="fCli(this)">Ativos</button>
+          <button class="filt" data-cs="inativo" onclick="fCli(this)">Inativos</button>
+          <button class="filt" data-cs="prospecto" onclick="fCli(this)">Prospectos</button>
+          <select class="fsel" id="fcArea" onchange="filtCli()"><option value="">Todas as áreas</option><option>Bancário / Dívidas</option><option>Família / Divórcio</option><option>Imobiliário / REURB</option><option>Consumidor</option><option>Previdenciário / INSS</option><option>Trabalhista</option></select>
+          <select class="fsel" id="fcAdv" onchange="filtCli()"><option value="">Todos advogados</option><option value="Nicholas">Dr. Nicholas</option><option value="Munique">Dra. Munique</option></select>
+        </div>
+        <div class="tw">
+          <div class="th gc"><div>Cliente</div><div>Telefone</div><div>Área</div><div>Advogado</div><div>Status</div><div style="text-align:right">Ações</div></div>
+          <div id="tbCli"></div>
+          <div class="pag"><div class="pi" id="piC">—</div><div class="pbs"><button class="pb" id="ppC" onclick="mpC(-1)" disabled="">‹</button><div class="pn" id="pnC">1</div><button class="pb" id="pnxC" onclick="mpC(1)">›</button></div></div>
+        </div>
+      </div>
+
+      <!-- PROCESSOS -->
+      <div class="pg" id="pgprocessos">
+        <div class="mets"><div class="met"><div class="met-l">Total</div><div class="met-v" id="mpT">—</div><div class="met-s">Processos</div></div><div class="met"><div class="met-l">Ativos</div><div class="met-v g" id="mpA">—</div><div class="met-s">Em andamento</div></div><div class="met"><div class="met-l">Dr. Nicholas</div><div class="met-v" id="mpNk">—</div><div class="met-s">Processos</div></div><div class="met"><div class="met-l">Dra. Munique</div><div class="met-v" id="mpMu">—</div><div class="met-s">Processos</div></div></div>
+        <div class="filts">
+          <button class="filt on" data-ps="todos" onclick="fProc(this)">Todos</button>
+          <button class="filt" data-ps="ativo" onclick="fProc(this)">Ativos</button>
+          <button class="filt" data-ps="suspenso" onclick="fProc(this)">Suspensos</button>
+          <button class="filt" data-ps="arquivado" onclick="fProc(this)">Arquivados</button>
+          <button class="filt" data-ps="encerrado" onclick="fProc(this)">Encerrados</button>
+          <select class="fsel" id="fpAdv" onchange="filtProc()"><option value="">Todos advogados</option><option value="Nicholas">Dr. Nicholas</option><option value="Munique">Dra. Munique</option></select>
+          <select class="fsel" id="fpTrib" onchange="filtProc()"><option value="">Todos tribunais</option><option>TJRS</option><option>TRF4</option><option>TRT4</option><option>STJ</option></select>
+        </div>
+        <div class="tw">
+          <div class="th gp"><div>Processo / Cliente</div><div>Tipo de ação</div><div>Vara / Tribunal</div><div>Advogado</div><div>Status</div><div style="text-align:right">Ações</div></div>
+          <div id="tbProc"></div>
+          <div class="pag"><div class="pi" id="piP">—</div><div class="pbs"><button class="pb" id="ppP" onclick="mpP(-1)" disabled="">‹</button><div class="pn" id="pnP">1</div><button class="pb" id="pnxP" onclick="mpP(1)">›</button></div></div>
+        </div>
+      </div>
+
+      <!-- PRAZOS -->
+      <div class="pg" id="pgprazos">
+        <div class="mets"><div class="met"><div class="met-l">Total</div><div class="met-v" id="mprT">—</div><div class="met-s">Cadastrados</div></div><div class="met"><div class="met-l">Vencidos</div><div class="met-v r" id="mprV">—</div><div class="met-s">Requerem atenção</div></div><div class="met"><div class="met-l">Hoje / Amanhã</div><div class="met-v" style="color:#FCD34D" id="mprH">—</div><div class="met-s">Urgente</div></div><div class="met"><div class="met-l">Esta semana</div><div class="met-v" id="mprS">—</div><div class="met-s">Próximos 7 dias</div></div></div>
+        <div class="filts">
+          <button class="filt on" data-prs="todos" onclick="fPraz(this)">Todos</button>
+          <button class="filt" data-prs="pendente" onclick="fPraz(this)">Pendentes</button>
+          <button class="filt" data-prs="vencido" onclick="fPraz(this)">Vencidos</button>
+          <button class="filt" data-prs="concluido" onclick="fPraz(this)">Concluídos</button>
+          <select class="fsel" id="fprAdv" onchange="filtPraz()"><option value="">Todos advogados</option><option value="Nicholas">Dr. Nicholas</option><option value="Munique">Dra. Munique</option></select>
+          <select class="fsel" id="fprPer" onchange="filtPraz()"><option value="">Todos períodos</option><option value="hoje">Hoje</option><option value="semana">Esta semana</option><option value="mes">Este mês</option></select>
+        </div>
+        <div class="tw">
+          <div class="th gpr"><div>Processo / Cliente</div><div>Descrição</div><div>Data do prazo</div><div>Advogado</div><div>Status</div><div style="text-align:right">Ações</div></div>
+          <div id="tbPraz"></div>
+          <div class="pag"><div class="pi" id="piPr">—</div><div class="pbs"><button class="pb" id="ppPr" onclick="mpPr(-1)" disabled="">‹</button><div class="pn" id="pnPr">1</div><button class="pb" id="pnxPr" onclick="mpPr(1)">›</button></div></div>
+        </div>
+      </div>
+
+      <div class="pg" id="pgfinanceiro"><div class="empty"><div class="ei">💰</div><div class="et">Módulo Financeiro</div><div class="es">Em desenvolvimento — em breve honorários e relatórios</div></div></div>
+      <div class="pg" id="pgpecas"><div class="empty"><div class="ei">📄</div><div class="et">Petições com IA</div><div class="es">Em desenvolvimento — em breve petições com Claude</div></div></div>
+      <div class="pg" id="pgleads">
+        <!-- Métricas leads -->
+        <div class="mets">
+          <div class="met" onclick="fLead(document.querySelector(&#39;[data-ls=todos]&#39;))">
+            <div class="met-l">Total de leads</div>
+            <div class="met-v" id="mlT">—</div>
+            <div class="met-s">Recebidos pelo site</div>
+          </div>
+          <div class="met" onclick="fLead(document.querySelector(&#39;[data-ls=novo]&#39;))">
+            <div class="met-l">Novos</div>
+            <div class="met-v" style="color:#FCD34D" id="mlN">—</div>
+            <div class="met-s">Aguardando contato</div>
+          </div>
+          <div class="met" onclick="fLead(document.querySelector(&#39;[data-ls=contatado]&#39;))">
+            <div class="met-l">Contatados</div>
+            <div class="met-v g" id="mlC">—</div>
+            <div class="met-s">Em andamento</div>
+          </div>
+          <div class="met">
+            <div class="met-l">Convertidos</div>
+            <div class="met-v" style="color:var(--ouro-claro)" id="mlV">—</div>
+            <div class="met-s">Viraram clientes</div>
+          </div>
+        </div>
+        <!-- Filtros -->
+        <div class="filts">
+          <button class="filt on" data-ls="todos" onclick="fLead(this)">Todos</button>
+          <button class="filt" data-ls="novo" onclick="fLead(this)">🔴 Novos</button>
+          <button class="filt" data-ls="contatado" onclick="fLead(this)">🟡 Contatados</button>
+          <button class="filt" data-ls="convertido" onclick="fLead(this)">🟢 Convertidos</button>
+          <button class="filt" data-ls="descartado" onclick="fLead(this)">⚫ Descartados</button>
+        </div>
+        <!-- Tabela -->
+        <div class="tw">
+          <div class="th" style="grid-template-columns:2fr 1.2fr 1.4fr 1fr 0.8fr 0.6fr">
+            <div>Lead / Contato</div><div>Telefone</div><div>Interesse</div><div>Data</div><div>Status</div><div style="text-align:right">Ações</div>
+          </div>
+          <div id="tbLead"></div>
+          <div class="pag">
+            <div class="pi" id="piL">—</div>
+            <div class="pbs">
+              <button class="pb" id="ppL" onclick="mpL(-1)" disabled="">‹</button>
+              <div class="pn" id="pnL">1</div>
+              <button class="pb" id="pnxL" onclick="mpL(1)">›</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</div>
+
+<!-- MODAL LEAD -->
+<div class="mo" id="moLead" style="display:none" onclick="if(event.target===this)fm(&#39;moLead&#39;)">
+  <div class="md md-sm">
+    <div class="mh"><div class="mt" id="tmLead">Lead</div><button class="mc" onclick="fm(&#39;moLead&#39;)">✕</button></div>
+    <div class="mb">
+      <div id="lead-conv-wrap" style="background:var(--card2);border:0.5px solid var(--borda2);border-radius:10px;padding:16px;margin-bottom:20px;max-height:260px;overflow-y:auto;">
+        <div style="font-size:10px;color:var(--texto3);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Conversa com o chatbot</div>
+        <div id="lead-conv"></div>
+      </div>
+      <div class="fg">
+        <div class="fgrp"><label class="fl">Status</label>
+          <select class="fs" id="lSt">
+            <option value="novo">🔴 Novo</option>
+            <option value="contatado">🟡 Contatado</option>
+            <option value="convertido">🟢 Convertido</option>
+            <option value="descartado">⚫ Descartado</option>
+          </select>
+        </div>
+        <div class="fgrp ff" style="margin-top:12px;"><label class="fl">Anotações internas</label>
+          <textarea class="fta" id="lObs" placeholder="Observações sobre este lead..." style="min-height:70px;"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="mf" style="flex-wrap:wrap;gap:8px;">
+      <button class="btn btn-o" id="lBtnWa" onclick="waLead()" style="background:rgba(37,211,102,.1);border-color:rgba(37,211,102,.3);color:#25D366;">💬 WhatsApp</button>
+      <button class="btn btn-o" id="lBtnPipe" onclick="enviarParaPipeline()">🧲 Enviar ao Pipeline</button>
+      <button class="btn btn-o" onclick="fm(&#39;moLead&#39;)">Fechar</button>
+      <button class="btn btn-g" onclick="savLead()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CLIENTE -->
+<div class="mo" id="moCli" style="display:none" onclick="if(event.target===this)fm(&#39;moCli&#39;)">
+  <div class="md">
+    <div class="mh"><div class="mt" id="tmCli">Novo Cliente</div><button class="mc" onclick="fm(&#39;moCli&#39;)">✕</button></div>
+    <div class="mb"><div class="fg">
+      <div class="fgrp ff"><label class="fl">Nome completo *</label><input class="fi2" id="cNm" placeholder="Nome do cliente"></div>
+      <div class="fgrp"><label class="fl">CPF</label><input class="fi2" id="cCpf" placeholder="000.000.000-00" oninput="mCpf(this)"></div>
+      <div class="fgrp"><label class="fl">Telefone / WhatsApp</label><input class="fi2" id="cTel" placeholder="(51) 99999-9999" oninput="mTel(this)"></div>
+      <div class="fgrp"><label class="fl">E-mail</label><input class="fi2" id="cEm" type="email"></div>
+      <div class="fgrp"><label class="fl">Cidade</label><input class="fi2" id="cCid" placeholder="Tramandaí"></div>
+      <div class="fgrp"><label class="fl">Área jurídica</label><select class="fs" id="cAr"><option value="">Selecionar</option><option>Bancário / Dívidas</option><option>Família / Divórcio</option><option>Imobiliário / REURB</option><option>Consumidor</option><option>Previdenciário / INSS</option><option>Trabalhista</option><option>Outro</option></select></div>
+      <div class="fgrp"><label class="fl">Advogado responsável</label><select class="fs" id="cAdv"><option value="">Selecionar</option><option value="Nicholas">Dr. Nicholas Machado</option><option value="Munique">Dra. Munique Kovalski</option></select></div>
+      <div class="fgrp"><label class="fl">Status</label><select class="fs" id="cSt"><option value="ativo">Ativo</option><option value="prospecto">Prospecto</option><option value="inativo">Inativo</option></select></div>
+      <div class="fgrp ff"><label class="fl">Observações</label><textarea class="fta" id="cObs" placeholder="Anotações..."></textarea></div>
+    </div></div>
+    <div class="mf"><button class="btn btn-o" onclick="fm(&#39;moCli&#39;)">Cancelar</button><button class="btn btn-g" onclick="savCli()">Salvar cliente</button></div>
+  </div>
+</div>
+
+<!-- MODAL PROCESSO -->
+<div class="mo" id="moProc" style="display:none" onclick="if(event.target===this)fm(&#39;moProc&#39;)">
+  <div class="md">
+    <div class="mh"><div class="mt" id="tmProc">Novo Processo</div><button class="mc" onclick="fm(&#39;moProc&#39;)">✕</button></div>
+    <div class="mb"><div class="fg">
+      <div class="fgrp ff"><label class="fl">Número do processo *</label><input class="fi2" id="pNum" placeholder="0000000-00.0000.0.00.0000"></div>
+      <div class="fgrp ff"><label class="fl">Nome do cliente / parte</label><input class="fi2" id="pCli" placeholder="Nome do cliente"></div>
+      <div class="fgrp ff"><label class="fl">Tipo de ação</label><input class="fi2" id="pAcao" placeholder="Ex: Ação de Indenização por Danos Morais"></div>
+      <div class="fgrp"><label class="fl">Vara</label><input class="fi2" id="pVara" placeholder="Ex: 1ª Vara Cível"></div>
+      <div class="fgrp"><label class="fl">Tribunal</label><select class="fs" id="pTrib"><option value="TJRS">TJRS</option><option value="TRF4">TRF4</option><option value="TRT4">TRT4</option><option value="STJ">STJ</option><option value="STF">STF</option><option value="Outro">Outro</option></select></div>
+      <div class="fgrp"><label class="fl">Fase processual</label><select class="fs" id="pFase"><option value="conhecimento">Conhecimento</option><option value="recursal">Recursal</option><option value="execucao">Execução</option><option value="cumprimento">Cumprimento de sentença</option><option value="administrativa">Administrativa</option></select></div>
+      <div class="fgrp"><label class="fl">Advogado responsável</label><select class="fs" id="pAdv"><option value="">Selecionar</option><option value="Nicholas">Dr. Nicholas Machado</option><option value="Munique">Dra. Munique Kovalski</option></select></div>
+      <div class="fgrp"><label class="fl">Status</label><select class="fs" id="pSt"><option value="ativo">Ativo</option><option value="suspenso">Suspenso</option><option value="arquivado">Arquivado</option><option value="encerrado">Encerrado</option></select></div>
+      <div class="fgrp"><label class="fl">Data de distribuição</label><input class="fi2" id="pDd" type="date"></div>
+      <div class="fgrp"><label class="fl">Valor da causa (R$)</label><input class="fi2" id="pVc" type="number" placeholder="0"></div>
+      <div class="fgrp ff"><label class="fl">Observações / Andamentos</label><textarea class="fta" id="pObs" placeholder="Últimos andamentos..."></textarea></div>
+    </div></div>
+    <div class="mf"><button class="btn btn-o" onclick="fm(&#39;moProc&#39;)">Cancelar</button><button class="btn btn-g" onclick="savProc()">Salvar processo</button></div>
+  </div>
+</div>
+
+<!-- MODAL PRAZO -->
+<div class="mo" id="moPraz" style="display:none" onclick="if(event.target===this)fm(&#39;moPraz&#39;)">
+  <div class="md md-sm">
+    <div class="mh"><div class="mt" id="tmPraz">Novo Prazo</div><button class="mc" onclick="fm(&#39;moPraz&#39;)">✕</button></div>
+    <div class="mb"><div class="fg">
+      <div class="fgrp ff"><label class="fl">Descrição do prazo *</label><input class="fi2" id="prDs" placeholder="Ex: Contestação, Recurso de Apelação..."></div>
+      <div class="fgrp ff"><label class="fl">Número do processo</label><input class="fi2" id="prPn" placeholder="0000000-00.0000.0.00.0000"></div>
+      <div class="fgrp ff"><label class="fl">Nome do cliente</label><input class="fi2" id="prCn" placeholder="Nome do cliente"></div>
+      <div class="fgrp"><label class="fl">Data do prazo *</label><input class="fi2" id="prDt" type="date"></div>
+      <div class="fgrp"><label class="fl">Data fatal</label><input class="fi2" id="prDf" type="date"></div>
+      <div class="fgrp"><label class="fl">Tipo</label><select class="fs" id="prTp"><option value="prazo">Prazo processual</option><option value="audiencia">Audiência</option><option value="pericia">Perícia</option><option value="reuniao">Reunião</option><option value="diligencia">Diligência</option><option value="outro">Outro</option></select></div>
+      <div class="fgrp"><label class="fl">Advogado responsável</label><select class="fs" id="prAdv"><option value="">Selecionar</option><option value="Nicholas">Dr. Nicholas Machado</option><option value="Munique">Dra. Munique Kovalski</option></select></div>
+      <div class="fgrp ff"><label class="fl">Observações</label><textarea class="fta" id="prObs" placeholder="Detalhes..." style="min-height:60px"></textarea></div>
+    </div></div>
+    <div class="mf"><button class="btn btn-o" onclick="fm(&#39;moPraz&#39;)">Cancelar</button><button class="btn btn-g" onclick="savPraz()">Salvar prazo</button></div>
+  </div>
+</div>
+
+<script>
+const SU='https://rdqwnpskoyuyhxfnyaie.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkcXducHNrb3l1eWh4Zm55YWllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwMDY3MDUsImV4cCI6MjA5NTU4MjcwNX0.siSlym96p1juzH4pXKPAR3ktx_JFIhfSb1ORLKyB5h8';
+let ses=null,pa='dashboard';
+let clis=[],clisF=[],pgC=1;
+let procs=[],procsF=[],pgP=1;
+let prazs=[],prazF=[],pgPr=1;
+const PP=15;
+let fsCli='todos',fsProc='todos',fsPraz='todos';
+let eCli=null,eProc=null,ePraz=null;
+
+async function login(){
+  const em=document.getElementById('lEmail').value.trim(),se=document.getElementById('lSenha').value;
+  const btn=document.getElementById('lBtn'),err=document.getElementById('lErr');
+  if(!em||!se){err.textContent='Preencha e-mail e senha.';err.style.display='block';return;}
+  btn.textContent='Entrando...';btn.disabled=true;err.style.display='none';
+
+  // Tenta login real via Supabase
+  try{
+    const r=await fetch(`${SU}/auth/v1/token?grant_type=password`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SK},
+      body:JSON.stringify({email:em,password:se})
+    });
+    const d=await r.json();
+    if(d.access_token){
+      ses=d;
+      ls('mb_s',{at:d.access_token,em:d.user?.email,ex:Date.now()+(d.expires_in*1000)});
+      cfgUsr(d.user?.email);
+      showApp();
+      return;
+    }
+  }catch(e){}
+
+  // Fallback local — aceita qualquer e-mail do escritório com senha mb@2026
+  const emails=['nick@machadobalestro.com.br','munique@machadobalestro.com.br','machadobalestroadv@gmail.com','munique.kovalskit5@gmail.com'];
+  if(emails.includes(em) && se==='mb@2026'){
+    ses={demo:1,em};
+    ls('mb_s',{demo:1,em,ex:Date.now()+(24*60*60*1000)});
+    cfgUsr(em);
+    showApp();
+    return;
+  }
+
+  err.textContent='E-mail ou senha incorretos.';
+  err.style.display='block';
+  btn.textContent='Entrar no sistema';
+  btn.disabled=false;
+}
+function ls(k,v){localStorage.setItem(k,JSON.stringify(v));}
+function cfgUsr(em){
+  const n=em?.includes('nick');
+  document.getElementById('sNm').textContent=n?'Dr. Nicholas Machado':'Dra. Munique Kovalski';
+  document.getElementById('sAv').textContent=n?'NM':'MK';
+  document.getElementById('sRl').textContent=n?'OAB/RS 120.898':'OAB/RS 107.903';
+}
+function showApp(){document.getElementById('loginScreen').style.display='none';document.getElementById('app').style.display='block';loadAll();}
+function logout(){if(!confirm('Deseja sair?'))return;ses=null;localStorage.removeItem('mb_s');document.getElementById('loginScreen').style.display='flex';document.getElementById('app').style.display='none';document.getElementById('lEmail').value='';document.getElementById('lSenha').value='';document.getElementById('lBtn').textContent='Entrar no sistema';document.getElementById('lBtn').disabled=false;document.getElementById('lErr').style.display='none';}
+function chkSes(){try{const s=JSON.parse(localStorage.getItem('mb_s')||'null');if(s&&(s.demo||Date.now()<s.ex)){ses=s;cfgUsr(s.em);showApp();}}catch(e){}}
+
+function gh(){return{'Content-Type':'application/json','apikey':SK,'Authorization':`Bearer ${ses?.at||SK}`};}
+async function rq(ep,o={}){const r=await fetch(`${SU}/rest/v1/${ep}`,{headers:{...gh(),...(o.headers||{})}, ...o});if(!r.ok)throw new Error(await r.text());const t=await r.text();return t?JSON.parse(t):null;}
+
+function ir(p){
+  pa=p;
+  document.querySelectorAll('.pg').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.sb-i').forEach(x=>x.classList.remove('on'));
+  const pg=document.getElementById('pg'+p);if(pg)pg.classList.add('on');
+  const ts={dashboard:'Dashboard',clientes:'Clientes',processos:'Processos',prazos:'Prazos',financeiro:'Financeiro',pecas:'Petições com IA',leads:'Leads do Site'};
+  document.getElementById('tbT').textContent=ts[p]||p;
+  const hs=['clientes','processos','prazos','leads'].includes(p);
+  document.getElementById('sBox').style.display=hs?'flex':'none';
+  document.getElementById('btnAtt').style.display=hs?'flex':'none';
+  document.getElementById('btnN').style.display=['clientes','processos','prazos'].includes(p)?'flex':'none';
+  const ls2={clientes:'+ Novo cliente',processos:'+ Novo processo',prazos:'+ Novo prazo'};
+  if(ls2[p])document.getElementById('btnN').textContent=ls2[p];
+  document.getElementById('sInp').value='';
+  document.getElementById('sInp').placeholder={clientes:'Buscar cliente...',processos:'Buscar processo...',prazos:'Buscar prazo...',leads:'Buscar lead...'}[p]||'Buscar...';
+  document.querySelectorAll('.sb-i').forEach(b=>{if(b.getAttribute('onclick')?.includes(`'${p}'`))b.classList.add('on');});
+  if(p==='leads')loadLeads();
+}
+function onSearch(){{clientes:filtCli,processos:filtProc,prazos:filtPraz,leads:filtLeads}[pa]?.();}
+function attPag(){{clientes:loadCli,processos:loadProc,prazos:loadPraz,leads:loadLeads}[pa]?.();}
+function abrirN(){{clientes:()=>openCli(),processos:()=>openProc(),prazos:()=>openPraz()}[pa]?.();}
+function fm(id,open){const el=document.getElementById(id);if(el)el.style.display=open?'flex':'none';}
+
+async function loadAll(){await Promise.all([loadCli(),loadProc(),loadPraz(),loadLeads()]);updDash();}
+
+async function loadCli(){
+  try{clis=await rq('clientes?order=criado_em.desc')||[];}catch(e){clis=dClis();}
+  const at=clis.filter(c=>c.status==='ativo').length;
+  const mes=new Date();mes.setDate(1);mes.setHours(0,0,0,0);
+  document.getElementById('mcT').textContent=clis.length;
+  document.getElementById('mcA').textContent=at;
+  document.getElementById('mcM').textContent=clis.filter(c=>new Date(c.criado_em)>=mes).length;
+  document.getElementById('bCli').textContent=clis.length;
+  filtCli();
+}
+function dClis(){return[
+  {id:'c1',nome:'Cristiane Jaqueline da Rocha',cpf:'012.098.210-28',telefone:'(51) 99695-7507',area_juridica:'Bancário / Dívidas',advogado:'Nicholas',status:'ativo',criado_em:'2025-08-15T10:00:00Z'},
+  {id:'c2',nome:'Rosmery de Andrade Pinto',cpf:'402.922.230-72',telefone:'(51) 99807-0027',area_juridica:'Imobiliário / REURB',advogado:'Nicholas',status:'ativo',criado_em:'2025-08-10T10:00:00Z'},
+  {id:'c3',nome:'Delmar Wille',cpf:'345.772.110-68',telefone:'(51) 98765-4321',area_juridica:'Consumidor',advogado:'Nicholas',status:'ativo',criado_em:'2025-07-20T10:00:00Z'},
+  {id:'c4',nome:'Rita de Cassia Lopes Vioni',cpf:'123.456.789-01',telefone:'(51) 97654-3210',area_juridica:'Bancário / Dívidas',advogado:'Munique',status:'ativo',criado_em:'2025-07-15T10:00:00Z'},
+  {id:'c5',nome:'Angela Hirsch Santana',cpf:'234.567.890-12',telefone:'(51) 96543-2109',area_juridica:'Previdenciário / INSS',advogado:'Munique',status:'ativo',criado_em:'2025-06-20T10:00:00Z'},
+  {id:'c6',nome:'Marisa Magdalena Hirsch',cpf:'345.678.901-23',telefone:'(51) 95432-1098',area_juridica:'Família / Divórcio',advogado:'Munique',status:'inativo',criado_em:'2025-06-10T10:00:00Z'},
+  {id:'c7',nome:'Natalia Coelho Fraga',cpf:'456.789.012-34',telefone:'(51) 94321-0987',area_juridica:'Previdenciário / INSS',advogado:'Nicholas',status:'ativo',criado_em:'2025-05-25T10:00:00Z'},
+  {id:'c8',nome:'Joel Grizza',cpf:'567.890.123-45',telefone:'(51) 93210-9876',area_juridica:'Trabalhista',advogado:'Munique',status:'prospecto',criado_em:'2026-05-20T10:00:00Z'},
+];}
+function fCli(b){document.querySelectorAll('[data-cs]').forEach(x=>x.classList.remove('on'));b.classList.add('on');fsCli=b.dataset.cs;pgC=1;filtCli();}
+function filtCli(){
+  const b=document.getElementById('sInp').value.toLowerCase(),a=document.getElementById('fcArea').value,adv=document.getElementById('fcAdv').value;
+  clisF=clis.filter(c=>(!b||c.nome?.toLowerCase().includes(b)||c.cpf?.includes(b)||c.telefone?.includes(b))&&(fsCli==='todos'||c.status===fsCli)&&(!a||c.area_juridica===a)&&(!adv||c.advogado===adv));
+  rendCli();
+}
+function rendCli(){
+  const i=(pgC-1)*PP,f=i+PP,pg=clisF.slice(i,f),tp=Math.ceil(clisF.length/PP);
+  document.getElementById('piC').textContent=`${clisF.length===0?0:i+1}–${Math.min(f,clisF.length)} de ${clisF.length}`;
+  document.getElementById('pnC').textContent=pgC;
+  document.getElementById('ppC').disabled=pgC<=1;document.getElementById('pnxC').disabled=pgC>=tp;
+  const el=document.getElementById('tbCli');
+  if(!clisF.length){el.innerHTML=emp('👤','Nenhum cliente encontrado');return;}
+  el.innerHTML=pg.map((c,idx)=>`<div class="tr gc" style="animation-delay:${idx*0.03}s" onclick="edCli('${c.id}')">
+    <div class="ti"><div class="tav" style="border-radius:50%">${ini(c.nome)}</div><div><div class="tn">${c.nome}</div><div class="ts">${c.cpf||'—'}</div></div></div>
+    <div style="font-size:13px;color:var(--texto2)">${c.telefone||'—'}</div>
+    <div>${bArea(c.area_juridica)}</div>
+    <div style="font-size:12px;color:var(--texto2)">${c.advogado==='Nicholas'?'Dr. Nicholas':c.advogado==='Munique'?'Dra. Munique':'—'}</div>
+    <div>${bSt(c.status)}</div>
+    <div class="acoes" onclick="event.stopPropagation()"><button class="ab" onclick="edCli('${c.id}')">✏</button><button class="ab" onclick="waC('${c.telefone||''}')">💬</button></div>
+  </div>`).join('');
+}
+function mpC(d){pgC=Math.max(1,Math.min(pgC+d,Math.ceil(clisF.length/PP)));rendCli();}
+
+async function loadProc(){
+  try{procs=await rq('processos?order=criado_em.desc')||[];}catch(e){procs=dProcs();}
+  document.getElementById('mpT').textContent=procs.length;
+  document.getElementById('mpA').textContent=procs.filter(p=>p.status==='ativo').length;
+  document.getElementById('mpNk').textContent=procs.filter(p=>p.advogado==='Nicholas').length;
+  document.getElementById('mpMu').textContent=procs.filter(p=>p.advogado==='Munique').length;
+  document.getElementById('bProc').textContent=procs.length;
+  filtProc();
+}
+function dProcs(){return[
+  {id:'p1',numero:'5023320-70.2024.8.21.0073',cliente_nome:'Cristiane Jaqueline da Rocha',tipo_acao:'Superendividamento — Lei 14.181/2021',vara:'2ª Vara Cível',tribunal:'TJRS',fase:'conhecimento',advogado:'Nicholas',status:'ativo',valor_causa:152000},
+  {id:'p2',numero:'5019224-75.2025.8.21.0073',cliente_nome:'Delmar Wille',tipo_acao:'Obrigação de Fazer — Plano de Saúde',vara:'1ª Vara Cível',tribunal:'TJRS',fase:'conhecimento',advogado:'Nicholas',status:'ativo',valor_causa:50000},
+  {id:'p3',numero:'5001018-69.2015.8.21.0006',cliente_nome:'Massa Falida Polese',tipo_acao:'Execução Civil',vara:'3ª Vara Cível',tribunal:'TJRS',fase:'execucao',advogado:'Nicholas',status:'suspenso',valor_causa:280000},
+  {id:'p4',numero:'5016876-84.2025.8.21.0073',cliente_nome:'Rita de Cassia Lopes Vioni',tipo_acao:'Superendividamento',vara:'2ª Vara Cível',tribunal:'TJRS',fase:'conhecimento',advogado:'Munique',status:'ativo',valor_causa:148000},
+  {id:'p5',numero:'0012345-67.2024.4.04.7100',cliente_nome:'Natalia Coelho Fraga',tipo_acao:'FIES — Manutenção de Taxa de Juros',vara:'5ª Vara Federal',tribunal:'TRF4',fase:'conhecimento',advogado:'Nicholas',status:'ativo',valor_causa:35000},
+  {id:'p6',numero:'0098765-43.2025.8.21.0073',cliente_nome:'Angela Hirsch Santana',tipo_acao:'INSS — Consignado Indevido',vara:'4ª Vara Federal',tribunal:'TRF4',fase:'conhecimento',advogado:'Munique',status:'ativo',valor_causa:28000},
+];}
+function fProc(b){document.querySelectorAll('[data-ps]').forEach(x=>x.classList.remove('on'));b.classList.add('on');fsProc=b.dataset.ps;pgP=1;filtProc();}
+function filtProc(){
+  const b=document.getElementById('sInp').value.toLowerCase(),adv=document.getElementById('fpAdv').value,tr=document.getElementById('fpTrib').value;
+  procsF=procs.filter(p=>(!b||p.numero?.toLowerCase().includes(b)||p.cliente_nome?.toLowerCase().includes(b)||p.tipo_acao?.toLowerCase().includes(b))&&(fsProc==='todos'||p.status===fsProc)&&(!adv||p.advogado===adv)&&(!tr||p.tribunal===tr));
+  rendProc();
+}
+function rendProc(){
+  const i=(pgP-1)*PP,f=i+PP,pg=procsF.slice(i,f),tp=Math.ceil(procsF.length/PP);
+  document.getElementById('piP').textContent=`${procsF.length===0?0:i+1}–${Math.min(f,procsF.length)} de ${procsF.length}`;
+  document.getElementById('pnP').textContent=pgP;
+  document.getElementById('ppP').disabled=pgP<=1;document.getElementById('pnxP').disabled=pgP>=tp;
+  const el=document.getElementById('tbProc');
+  if(!procsF.length){el.innerHTML=emp('⚖️','Nenhum processo encontrado');return;}
+  el.innerHTML=pg.map((p,idx)=>`<div class="tr gp" style="animation-delay:${idx*0.03}s" onclick="edProc('${p.id}')">
+    <div class="ti"><div class="tav" style="font-size:9px;text-align:center;line-height:1.2">${p.tribunal||'JUS'}</div><div><div class="tn" style="font-size:12px;font-family:'DM Sans',sans-serif">${p.numero}</div><div class="ts">${p.cliente_nome||'—'}</div></div></div>
+    <div style="font-size:12px;color:var(--texto2)">${p.tipo_acao||'—'}</div>
+    <div><div style="font-size:12px;color:var(--texto2)">${p.vara||'—'}</div><div style="font-size:11px;color:var(--texto3)">${p.tribunal}</div></div>
+    <div style="font-size:12px;color:var(--texto2)">${p.advogado==='Nicholas'?'Dr. Nicholas':p.advogado==='Munique'?'Dra. Munique':'—'}</div>
+    <div>${bStP(p.status)}</div>
+    <div class="acoes" onclick="event.stopPropagation()"><button class="ab" onclick="edProc('${p.id}')">✏</button><button class="ab" title="Adicionar prazo" onclick="novPrazProc('${p.numero}','${(p.cliente_nome||'').replace(/'/g,'')}')">📅</button></div>
+  </div>`).join('');
+}
+function mpP(d){pgP=Math.max(1,Math.min(pgP+d,Math.ceil(procsF.length/PP)));rendProc();}
+
+async function loadPraz(){
+  try{prazs=await rq('prazos?order=data_prazo.asc')||[];}catch(e){prazs=dPrazs();}
+  calcMPraz();filtPraz();
+}
+function dPrazs(){
+  const h=new Date(),d=(n)=>{const x=new Date(h);x.setDate(x.getDate()+n);return x.toISOString().split('T')[0];};
+  return[
+    {id:'pr1',processo_numero:'5023320-70.2024.8.21.0073',cliente_nome:'Cristiane Jaqueline da Rocha',descricao:'Réplica à Contestação',tipo:'prazo',data_prazo:d(1),advogado:'Nicholas',status:'pendente',criado_em:new Date().toISOString()},
+    {id:'pr2',processo_numero:'5019224-75.2025.8.21.0073',cliente_nome:'Delmar Wille',descricao:'Impugnação ao Laudo NatJus',tipo:'prazo',data_prazo:d(3),advogado:'Nicholas',status:'pendente',criado_em:new Date().toISOString()},
+    {id:'pr3',processo_numero:'5016876-84.2025.8.21.0073',cliente_nome:'Rita de Cassia Lopes Vioni',descricao:'Audiência de Conciliação',tipo:'audiencia',data_prazo:d(7),advogado:'Munique',status:'pendente',criado_em:new Date().toISOString()},
+    {id:'pr4',processo_numero:'0012345-67.2024.4.04.7100',cliente_nome:'Natalia Coelho Fraga',descricao:'Contrarrazões de Apelação',tipo:'prazo',data_prazo:d(14),advogado:'Nicholas',status:'pendente',criado_em:new Date().toISOString()},
+    {id:'pr5',processo_numero:'0098765-43.2025.8.21.0073',cliente_nome:'Angela Hirsch Santana',descricao:'Memorial Final',tipo:'prazo',data_prazo:d(-2),advogado:'Munique',status:'vencido',criado_em:new Date().toISOString()},
+    {id:'pr6',processo_numero:'5001018-69.2015.8.21.0006',cliente_nome:'Massa Falida Polese',descricao:'Manifestação sobre laudo pericial',tipo:'prazo',data_prazo:d(30),advogado:'Nicholas',status:'pendente',criado_em:new Date().toISOString()},
+  ];
+}
+function calcMPraz(){
+  const h=new Date();h.setHours(0,0,0,0);
+  const am=new Date(h);am.setDate(am.getDate()+1);
+  const sm=new Date(h);sm.setDate(sm.getDate()+7);
+  const vc=prazs.filter(p=>new Date(p.data_prazo)<h&&p.status!=='concluido').length;
+  const hj=prazs.filter(p=>{const d=new Date(p.data_prazo);d.setHours(0,0,0,0);return(d.getTime()===h.getTime()||d.getTime()===am.getTime())&&p.status==='pendente';}).length;
+  const sk=prazs.filter(p=>{const d=new Date(p.data_prazo);return d>=h&&d<=sm&&p.status==='pendente';}).length;
+  document.getElementById('mprT').textContent=prazs.length;
+  document.getElementById('mprV').textContent=vc;
+  document.getElementById('mprH').textContent=hj;
+  document.getElementById('mprS').textContent=sk;
+  document.getElementById('bPraz').textContent=hj+vc||'0';
+  document.getElementById('dUrg').textContent=prazs.filter(p=>{const d=new Date(p.data_prazo);const df=Math.ceil((d-h)/(864e5));return df<=3&&df>=-1&&p.status!=='concluido';}).length;
+}
+function fPraz(b){document.querySelectorAll('[data-prs]').forEach(x=>x.classList.remove('on'));b.classList.add('on');fsPraz=b.dataset.prs;pgPr=1;filtPraz();}
+function filtPraz(){
+  const b=document.getElementById('sInp').value.toLowerCase(),adv=document.getElementById('fprAdv').value,per=document.getElementById('fprPer').value;
+  const h=new Date();h.setHours(0,0,0,0);
+  prazF=prazs.filter(p=>{
+    const mb=!b||p.descricao?.toLowerCase().includes(b)||p.processo_numero?.toLowerCase().includes(b)||p.cliente_nome?.toLowerCase().includes(b);
+    const d=new Date(p.data_prazo);const isV=d<h&&p.status!=='concluido';
+    const ef=isV?'vencido':p.status;
+    const ms=fsPraz==='todos'||ef===fsPraz;
+    let mp=true;
+    if(per==='hoje'){const t=new Date(h);mp=d.toDateString()===t.toDateString();}
+    if(per==='semana'){const s=new Date(h);s.setDate(s.getDate()+7);mp=d>=h&&d<=s;}
+    if(per==='mes'){const m=new Date(h);m.setDate(m.getDate()+30);mp=d>=h&&d<=m;}
+    return mb&&ms&&(!adv||p.advogado===adv)&&mp;
+  });
+  rendPraz();
+}
+function rendPraz(){
+  const i=(pgPr-1)*PP,f=i+PP,pg=prazF.slice(i,f),tp=Math.ceil(prazF.length/PP);
+  document.getElementById('piPr').textContent=`${prazF.length===0?0:i+1}–${Math.min(f,prazF.length)} de ${prazF.length}`;
+  document.getElementById('pnPr').textContent=pgPr;
+  document.getElementById('ppPr').disabled=pgPr<=1;document.getElementById('pnxPr').disabled=pgPr>=tp;
+  const el=document.getElementById('tbPraz');
+  if(!prazF.length){el.innerHTML=emp('📅','Nenhum prazo encontrado');return;}
+  el.innerHTML=pg.map((p,idx)=>`<div class="tr gpr" style="animation-delay:${idx*0.03}s" onclick="edPraz('${p.id}')">
+    <div><div style="font-size:12px;color:var(--texto)">${p.processo_numero||'—'}</div><div style="font-size:11px;color:var(--texto3)">${p.cliente_nome||'—'}</div></div>
+    <div><div style="font-size:13px;color:var(--texto)">${p.descricao}</div><div style="font-size:11px;color:var(--texto3);margin-top:2px">${tpLbl(p.tipo)}</div></div>
+    <div>${dtHtml(p.data_prazo)}</div>
+    <div style="font-size:12px;color:var(--texto2)">${p.advogado==='Nicholas'?'Dr. Nicholas':p.advogado==='Munique'?'Dra. Munique':'—'}</div>
+    <div>${bStp(p.data_prazo,p.status)}</div>
+    <div class="acoes" onclick="event.stopPropagation()"><button class="ab" onclick="edPraz('${p.id}')">✏</button><button class="ab" title="Concluir" onclick="concPraz('${p.id}')" ${p.status==='concluido'?'style="opacity:0.3"':''}>✓</button></div>
+  </div>`).join('');
+}
+function mpPr(d){pgPr=Math.max(1,Math.min(pgPr+d,Math.ceil(prazF.length/PP)));rendPraz();}
+
+function updDash(){
+  document.getElementById('dCli').textContent=clis.filter(c=>c.status==='ativo').length;
+  document.getElementById('dProc').textContent=procs.filter(p=>p.status==='ativo').length;
+  document.getElementById('rProc').textContent=procs.filter(p=>p.status==='ativo').length;
+  document.getElementById('rNick').textContent=procs.filter(p=>p.advogado==='Nicholas').length+' proc.';
+  document.getElementById('rMun').textContent=procs.filter(p=>p.advogado==='Munique').length+' proc.';
+  const mes=new Date();mes.setDate(1);mes.setHours(0,0,0,0);
+  document.getElementById('rCMes').textContent=clis.filter(c=>new Date(c.criado_em)>=mes).length;
+  const mf=new Date();mf.setMonth(mf.getMonth()+1);mf.setDate(1);
+  document.getElementById('rPMes').textContent=prazs.filter(p=>new Date(p.data_prazo)>=mes&&new Date(p.data_prazo)<mf).length;
+  rendAg();
+}
+function rendAg(){
+  const h=new Date();h.setHours(0,0,0,0);
+  const nx=prazs.filter(p=>p.status!=='concluido').sort((a,b)=>new Date(a.data_prazo)-new Date(b.data_prazo)).slice(0,6);
+  const el=document.getElementById('agLst');
+  if(!nx.length){el.innerHTML='<div class="empty" style="padding:40px"><div class="es">Nenhum prazo cadastrado</div></div>';return;}
+  el.innerHTML=nx.map(p=>`<div class="ag-i" onclick="ir('prazos')">
+    <div class="ag-it"><span class="ag-id">${p.descricao}</span>${dtHtml(p.data_prazo)}</div>
+    <div class="ag-ip">${p.processo_numero||''} · ${p.cliente_nome||''}</div>
+    <div style="display:flex;gap:8px"><span style="font-size:11px;color:var(--texto3)">${p.advogado==='Nicholas'?'Dr. Nicholas':'Dra. Munique'}</span><span style="font-size:11px;color:var(--texto3)">· ${tpLbl(p.tipo)}</span></div>
+  </div>`).join('');
+}
+
+// CRUD Clientes
+function openCli(c=null){
+  eCli=c?.id||null;
+  document.getElementById('tmCli').textContent=c?'Editar Cliente':'Novo Cliente';
+  const sv=(id,v)=>document.getElementById(id).value=v||'';
+  sv('cNm',c?.nome);sv('cCpf',c?.cpf);sv('cTel',c?.telefone);sv('cEm',c?.email);sv('cCid',c?.cidade||'Tramandaí');sv('cAr',c?.area_juridica);sv('cAdv',c?.advogado);
+  document.getElementById('cSt').value=c?.status||'ativo';sv('cObs',c?.observacoes);
+  document.getElementById('moCli').style.display='flex';setTimeout(()=>document.getElementById('cNm').focus(),100);
+}
+function edCli(id){openCli(clis.find(c=>c.id===id));}
+async function savCli(){
+  const nm=gv('cNm');if(!nm){t2('⚠️ Nome obrigatório',false);return;}
+  const pl={nome:nm,cpf:gv('cCpf'),telefone:gv('cTel'),whatsapp:gv('cTel'),email:gv('cEm'),cidade:gv('cCid'),area_juridica:gv('cAr'),advogado:gv('cAdv'),status:gv('cSt')||'ativo',observacoes:gv('cObs'),atualizado_em:new Date().toISOString()};
+  try{
+    if(eCli)await rq(`clientes?id=eq.${eCli}`,{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify(pl)});
+    else await rq('clientes',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(pl)});
+    t2('✅ Cliente '+(eCli?'atualizado':'cadastrado')+'!');
+  }catch(e){
+    if(eCli){const i=clis.findIndex(c=>c.id===eCli);if(i>=0)clis[i]={...clis[i],...pl};}
+    else{pl.id=Date.now().toString();pl.criado_em=new Date().toISOString();clis.unshift(pl);}
+    t2('✅ Salvo!');
+  }
+  fm('moCli');loadCli();updDash();
+}
+
+// CRUD Processos
+function openProc(p=null){
+  eProc=p?.id||null;
+  document.getElementById('tmProc').textContent=p?'Editar Processo':'Novo Processo';
+  document.getElementById('pNum').value=p?.numero||'';document.getElementById('pCli').value=p?.cliente_nome||'';document.getElementById('pAcao').value=p?.tipo_acao||'';document.getElementById('pVara').value=p?.vara||'';document.getElementById('pTrib').value=p?.tribunal||'TJRS';document.getElementById('pFase').value=p?.fase||'conhecimento';document.getElementById('pAdv').value=p?.advogado||'';document.getElementById('pSt').value=p?.status||'ativo';document.getElementById('pDd').value=p?.data_distribuicao||'';document.getElementById('pVc').value=p?.valor_causa||'';document.getElementById('pObs').value=p?.observacoes||'';
+  document.getElementById('moProc').style.display='flex';setTimeout(()=>document.getElementById('pNum').focus(),100);
+}
+function edProc(id){openProc(procs.find(p=>p.id===id));}
+async function savProc(){
+  const num=document.getElementById('pNum').value.trim();if(!num){t2('⚠️ Número obrigatório',false);return;}
+  const pl={numero:num,cliente_nome:gv('pCli'),tipo_acao:gv('pAcao'),vara:gv('pVara'),tribunal:gv('pTrib')||'TJRS',fase:gv('pFase')||'conhecimento',advogado:gv('pAdv'),status:gv('pSt')||'ativo',data_distribuicao:gv('pDd')||null,valor_causa:document.getElementById('pVc').value||null,observacoes:gv('pObs'),atualizado_em:new Date().toISOString()};
+  try{
+    if(eProc)await rq(`processos?id=eq.${eProc}`,{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify(pl)});
+    else await rq('processos',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(pl)});
+    t2('✅ Processo '+(eProc?'atualizado':'cadastrado')+'!');
+  }catch(e){
+    if(eProc){const i=procs.findIndex(p=>p.id===eProc);if(i>=0)procs[i]={...procs[i],...pl};}
+    else{pl.id=Date.now().toString();pl.criado_em=new Date().toISOString();procs.unshift(pl);}
+    t2('✅ Salvo!');
+  }
+  fm('moProc');loadProc();updDash();
+}
+
+// CRUD Prazos
+function openPraz(p=null){
+  ePraz=p?.id||null;
+  document.getElementById('tmPraz').textContent=p?'Editar Prazo':'Novo Prazo';
+  document.getElementById('prDs').value=p?.descricao||'';document.getElementById('prPn').value=p?.processo_numero||'';document.getElementById('prCn').value=p?.cliente_nome||'';document.getElementById('prDt').value=p?.data_prazo||'';document.getElementById('prDf').value=p?.data_fatal||'';document.getElementById('prTp').value=p?.tipo||'prazo';document.getElementById('prAdv').value=p?.advogado||'';document.getElementById('prObs').value=p?.observacoes||'';
+  document.getElementById('moPraz').style.display='flex';setTimeout(()=>document.getElementById('prDs').focus(),100);
+}
+function edPraz(id){openPraz(prazs.find(p=>p.id===id));}
+function novPrazProc(num,cli){openPraz({processo_numero:num,cliente_nome:cli});}
+async function savPraz(){
+  const ds=document.getElementById('prDs').value.trim(),dt=document.getElementById('prDt').value;
+  if(!ds){t2('⚠️ Descrição obrigatória',false);return;}if(!dt){t2('⚠️ Data obrigatória',false);return;}
+  const pl={descricao:ds,processo_numero:gv('prPn'),cliente_nome:gv('prCn'),data_prazo:dt,data_fatal:gv('prDf')||null,tipo:gv('prTp')||'prazo',advogado:gv('prAdv'),status:'pendente',observacoes:gv('prObs')};
+  try{
+    if(ePraz)await rq(`prazos?id=eq.${ePraz}`,{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({...pl,atualizado_em:new Date().toISOString()})});
+    else await rq('prazos',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(pl)});
+    t2('✅ Prazo '+(ePraz?'atualizado':'cadastrado')+'!');
+  }catch(e){
+    if(ePraz){const i=prazs.findIndex(p=>p.id===ePraz);if(i>=0)prazs[i]={...prazs[i],...pl};}
+    else{pl.id=Date.now().toString();pl.criado_em=new Date().toISOString();prazs.push(pl);}
+    t2('✅ Salvo!');
+  }
+  fm('moPraz');loadPraz();updDash();
+}
+async function concPraz(id){
+  try{await rq(`prazos?id=eq.${id}`,{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({status:'concluido'})});}catch(e){}
+  const i=prazs.findIndex(p=>p.id===id);if(i>=0)prazs[i].status='concluido';
+  t2('✅ Prazo concluído!');loadPraz();updDash();
+}
+
+// Helpers
+function gv(id){return document.getElementById(id).value.trim()||null;}
+function ini(n){if(!n)return'?';const p=n.trim().split(' ');return(p[0][0]+(p[1]?.[0]||'')).toUpperCase();}
+function emp(ic,tt){return`<div class="empty"><div class="ei">${ic}</div><div class="et">${tt}</div></div>`;}
+function waC(tel){if(!tel)return;window.open('https://wa.me/55'+tel.replace(/\D/g,''),'_blank');}
+function mCpf(el){let v=el.value.replace(/\D/g,'').slice(0,11);v=v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');el.value=v;}
+function mTel(el){let v=el.value.replace(/\D/g,'').slice(0,11);if(v.length>10)v=v.replace(/(\d{2})(\d{5})(\d{4})/,'($1) $2-$3');else if(v.length>6)v=v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');el.value=v;}
+function tpLbl(t){return{prazo:'Prazo processual',audiencia:'Audiência',pericia:'Perícia',reuniao:'Reunião',diligencia:'Diligência',outro:'Outro'}[t]||'Prazo';}
+
+function dtHtml(ds){
+  const d=new Date(ds+'T12:00:00'),h=new Date();h.setHours(0,0,0,0);
+  const df=Math.ceil((d-h)/864e5);
+  const fm=d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  let cl='pdv',lb=`+${df}d`;
+  if(df<0){cl='pdr';lb=`${df}d`;}
+  else if(df===0){cl='pda';lb='Hoje';}
+  else if(df===1){cl='pdl';lb='Amanhã';}
+  else if(df<=3){cl='pdl';lb=`+${df}d`;}
+  else if(df<=7){cl='pda';lb=`+${df}d`;}
+  return`<div><div style="font-size:12px;color:var(--texto2);margin-bottom:4px">${fm}</div><span class="pd ${cl}">${lb}</span></div>`;
+}
+function bStp(ds,st){
+  if(st==='concluido')return'<span class="badge bc">Concluído</span>';
+  const d=new Date(ds+'T12:00:00'),h=new Date();h.setHours(0,0,0,0);
+  const df=Math.ceil((d-h)/864e5);
+  if(df<0)return'<span class="badge bv">Vencido</span>';
+  if(df===0)return'<span class="badge bh">Hoje</span>';
+  if(df===1)return'<span class="badge bam">Amanhã</span>';
+  if(df<=3)return'<span class="badge bu">Urgente</span>';
+  return'<span class="badge bpe">Pendente</span>';
+}
+function bArea(a){
+  if(!a)return'<span style="color:var(--texto3);font-size:12px">—</span>';
+  const m={'Bancário / Dívidas':'bbank','Família / Divórcio':'bfam','Imobiliário / REURB':'bimob','Consumidor':'bcons','Previdenciário / INSS':'bprev','Trabalhista':'btrab'};
+  return`<span class="badge ${m[a]||'bpe'}">${a.split(' / ')[0].split(' ')[0]}</span>`;
+}
+function bSt(s){return`<span class="badge ${{'ativo':'ba','inativo':'bi','prospecto':'bp'}[s]||'ba'}">${s||'ativo'}</span>`;}
+function bStP(s){return`<span class="badge ${{'ativo':'ba','suspenso':'bsu','arquivado':'bar','encerrado':'be'}[s]||'ba'}">${s||'ativo'}</span>`;}
+function t2(msg,ok=true){const el=document.createElement('div');el.className='toast';el.style.borderColor=ok?'rgba(74,222,128,0.3)':'rgba(248,113,113,0.3)';el.innerHTML=`<span>${msg}</span>`;document.body.appendChild(el);setTimeout(()=>el.remove(),3000);}
+
+// ============================================================
+// MÓDULO LEADS
+// ============================================================
+let leads=[],leadsF=[],pgL=1,fsLead='todos',eLeadId=null;
+
+async function loadLeads(){
+  try{
+    const r=await rq('leads?select=*&order=criado_em.desc');
+    leads=Array.isArray(r)?r:[];
+  }catch(e){leads=[];}
+  updLeadMets();filtLeads();
+  const novos=leads.filter(l=>!l.status||l.status==='novo').length;
+  const b=document.getElementById('bLead');
+  if(b)b.textContent=novos||'—';
+}
+
+function updLeadMets(){
+  const fn=s=>leads.filter(l=>l.status===s).length;
+  sv('mlT',leads.length);
+  sv('mlN',leads.filter(l=>!l.status||l.status==='novo').length);
+  sv('mlC',fn('contatado'));
+  sv('mlV',fn('convertido'));
+}
+
+function fLead(el){
+  document.querySelectorAll('[data-ls]').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  fsLead=el.dataset.ls;
+  pgL=1;
+  filtLeads();
+}
+
+function filtLeads(){
+  leadsF=leads.filter(l=>{
+    if(fsLead==='todos')return true;
+    if(fsLead==='novo')return !l.status||l.status==='novo';
+    return l.status===fsLead;
+  });
+  const q=(document.getElementById('sInp')||{value:''}).value.toLowerCase();
+  if(q&&pa==='leads')leadsF=leadsF.filter(l=>
+    (l.nome||'').toLowerCase().includes(q)||
+    (l.area_juridica||'').toLowerCase().includes(q)||
+    (l.problema||'').toLowerCase().includes(q)||
+    (l.cidade||'').toLowerCase().includes(q)
+  );
+  rendLeads();
+}
+
+function rendLeads(){
+  const tb=document.getElementById('tbLead');
+  const total=leadsF.length;
+  const pages=Math.max(1,Math.ceil(total/PP));
+  if(pgL>pages)pgL=pages;
+  const slice=leadsF.slice((pgL-1)*PP,pgL*PP);
+
+  sv('piL',`${total} lead${total!==1?'s':''}`);
+  sv('pnL',pgL);
+  document.getElementById('ppL').disabled=pgL<=1;
+  document.getElementById('pnxL').disabled=pgL>=pages;
+
+  if(!slice.length){tb.innerHTML=emp('💬','Nenhum lead encontrado');return;}
+
+  tb.innerHTML=slice.map(l=>{
+    const nome=l.nome||'—';
+    const area=l.area_juridica||'—';
+    const problema=(l.problema||'—').substring(0,45)+(l.problema?.length>45?'...':'');
+    const dt=l.criado_em?new Date(l.criado_em).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'}):'—';
+    const st=l.status||'novo';
+    const urgBadge=l.urgencia?`<span class="badge ${l.urgencia==='alta'?'bv':l.urgencia==='media'?'bam':'bpe'}" style="font-size:9px;margin-left:4px">${l.urgencia}</span>`:'';
+    const stBadge={
+      novo:'<span class="badge bp">🔴 Novo</span>',
+      contatado:'<span class="badge bsu">🟡 Contatado</span>',
+      convertido:'<span class="badge ba">🟢 Convertido</span>',
+      descartado:'<span class="badge bar">⚫ Descartado</span>',
+    }[st]||'<span class="badge bp">🔴 Novo</span>';
+
+    return`<div class="tr" style="grid-template-columns:2fr 1.2fr 1.4fr 1fr 0.8fr 0.6fr" onclick="abrirLead('${l.id}')">
+      <div class="ti">
+        <div class="tav" style="background:rgba(184,150,12,0.1);color:var(--ouro-claro);">${ini(nome)}</div>
+        <div>
+          <div class="tn">${nome}${urgBadge}</div>
+          <div class="ts">${l.cidade||''} ${l.canal?'· via '+l.canal:''}</div>
+        </div>
+      </div>
+      <div>${bArea(area)}</div>
+      <div style="font-size:12px;color:var(--texto2);">${problema}</div>
+      <div style="font-size:12px;color:var(--texto2);">${dt}</div>
+      <div>${stBadge}</div>
+      <div class="acoes" onclick="event.stopPropagation()">
+        ${l.telefone?`<button class="ab" onclick="waRapido('${(l.telefone||'').replace(/\D/g,'')}')" title="WhatsApp" style="color:#25D366">💬</button>`:''}
+        <button class="ab" onclick="abrirLead('${l.id}')" title="Detalhes">👁</button>
+        <button class="ab" onclick="enviarPipelineDireto('${l.id}')" title="Enviar ao Pipeline">🧲</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function mpL(d){pgL+=d;rendLeads();}
+
+function abrirLead(id){
+  const l=leads.find(x=>String(x.id)===String(id));
+  if(!l)return;
+  eLeadId=id;
+  const nome=l.nome||'—';
+  document.getElementById('tmLead').textContent=`💬 ${nome}`;
+  document.getElementById('lSt').value=l.status||'novo';
+  document.getElementById('lObs').value=l.observacao||'';
+
+  // Monta card com dados do lead
+  const convEl=document.getElementById('lead-conv');
+  const campos=[
+    {icon:'👤',l:'Nome',          v:l.nome},
+    {icon:'⚖️',l:'Área jurídica', v:l.area_juridica},
+    {icon:'📋',l:'Problema',      v:l.problema},
+    {icon:'🚨',l:'Urgência',      v:l.urgencia},
+    {icon:'📍',l:'Cidade',        v:l.cidade},
+    {icon:'📱',l:'WhatsApp',      v:l.telefone},
+    {icon:'📡',l:'Canal',         v:l.canal},
+    {icon:'🗓️',l:'Recebido em',   v:l.criado_em?new Date(l.criado_em).toLocaleString('pt-BR'):'—'},
+  ].filter(c=>c.v);
+
+  convEl.innerHTML=campos.map(c=>`
+    <div style="display:flex;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--borda2);">
+      <span style="font-size:16px;width:22px;flex-shrink:0;">${c.icon}</span>
+      <div>
+        <div style="font-size:10px;color:var(--texto3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">${c.l}</div>
+        <div style="font-size:13px;color:var(--texto);">${c.v}</div>
+      </div>
+    </div>`).join('');
+
+  fm('moLead',true);
+}
+
+function waLead(){
+  const l=leads.find(x=>String(x.id)===String(eLeadId));
+  const tel=(l?.telefone||'').replace(/\D/g,'');
+  if(!tel){t2('⚠️ Telefone não informado por este lead.',false);return;}
+  const num=tel.startsWith('55')?tel:'55'+tel;
+  window.open(`https://wa.me/${num}`,'_blank');
+}
+
+function waRapido(tel){
+  if(!tel){t2('⚠️ Telefone não informado.',false);return;}
+  const num=tel.startsWith('55')?tel:'55'+tel;
+  window.open(`https://wa.me/${num}`,'_blank');
+}
+
+async function savLead(){
+  if(!eLeadId)return;
+  try{
+    await rq(`leads?id=eq.${eLeadId}`,{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({status:document.getElementById('lSt').value,observacao:document.getElementById('lObs').value})});
+    const l=leads.find(x=>String(x.id)===String(eLeadId));
+    if(l){l.status=document.getElementById('lSt').value;l.observacao=document.getElementById('lObs').value;}
+    t2('✅ Lead atualizado!');
+    fm('moLead');
+    updLeadMets();filtLeads();
+    const novos=leads.filter(l=>!l.status||l.status==='novo').length;
+    const b=document.getElementById('bLead');if(b)b.textContent=novos||'—';
+  }catch(e){t2('❌ Erro ao salvar.',false);}
+}
+
+async function enviarParaPipeline(){
+  const l=leads.find(x=>String(x.id)===String(eLeadId));
+  if(!l)return;
+  await _enviarPipe(l);
+  fm('moLead');
+}
+
+async function enviarPipelineDireto(id){
+  const l=leads.find(x=>String(x.id)===String(id));
+  if(!l)return;
+  await _enviarPipe(l);
+}
+
+async function _enviarPipe(l){
+  const nome=l.nome||'Sem nome';
+  try{
+    await rq('pipeline_clientes',{
+      method:'POST',
+      headers:{'Prefer':'return=minimal'},
+      body:JSON.stringify({
+        nome,
+        area: l.area_juridica||'Civil',
+        etapa:0,
+        valor:0,
+        data_contato:new Date().toISOString().split('T')[0],
+        advogado:'Dr. Nicholas',
+        observacao:`Lead do site${l.cidade?' — '+l.cidade:''}.${l.problema?' '+l.problema:''}`.trim(),
+        docs_pendentes:[],
+        docs_obs:''
+      })
+    });
+    await rq(`leads?id=eq.${l.id}`,{method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify({status:'contatado'})});
+    l.status='contatado';
+    t2(`✅ ${nome} enviado ao Pipeline!`);
+    updLeadMets();filtLeads();
+  }catch(e){t2('❌ Erro: '+e.message,false);}
+}
+
+// ============================================================
+// ALERTAS: DOCS PENDENTES
+(async function loadAlertasDocs(){
+  const DIAS_W=3, DIAS_U=7;
+  const DLBL={rg:'RG/CNH',cpf:'CPF',residencia:'Comp. residência',contrato:'Doc. caso',ctps:'CTPS/holerites',procuracao:'Procuração',outros:'Outros'};
+  function dias(d){if(!d)return 0;return Math.floor((new Date()-new Date(d+'T12:00:00'))/864e5);}
+  const wrap=document.getElementById('al-wrap');
+  const list=document.getElementById('al-list');
+  const ok=document.getElementById('al-ok');
+  if(!wrap)return;
+  try{
+    const res=await fetch(SU+'/rest/v1/pipeline_clientes?etapa=eq.2&order=data_contato.asc',
+      {headers:{'apikey':SK,'Authorization':'Bearer '+SK}});
+    if(!res.ok)return;
+    const data=await res.json();
+    const pend=(data||[]).filter(c=>dias(c.data_contato)>=DIAS_W).sort((a,b)=>dias(b.data_contato)-dias(a.data_contato));
+    wrap.style.display='block';
+    if(!pend.length){ok.classList.add('show');return;}
+    ok.classList.remove('show');
+    list.innerHTML=pend.map(c=>{
+      const d=dias(c.data_contato),urg=d>=DIAS_U;
+      const docs=(c.docs_pendentes||[]).map(x=>DLBL[x]||x).join(', ')||'docs pendentes';
+      return`<a class="al-card${urg?' urg':''}" href="financeiro-mb.html">
+        <span class="al-ic">${urg?'🚨':'⚠️'}</span>
+        <div class="al-body">
+          <div class="al-nome">${c.nome}</div>
+          <div class="al-sub">${c.area||''} · ${c.advogado||''} · ${docs}${c.docs_obs?' · "'+c.docs_obs+'"':''}</div>
+        </div>
+        <span class="al-badge ${urg?'d':'w'}">${urg?'🔴 '+d+'d':'⏳ '+d+'d'}</span>
+      </a>`;
+    }).join('');
+  }catch(e){/* tabela ainda não criada — silencioso */}
+})();
+
+// ============================================================
+// RESET DE SENHA
+// ============================================================
+function mostrarReset(){
+  document.getElementById('telaLogin').style.display='none';
+  document.getElementById('telaReset').style.display='block';
+  document.getElementById('telaNovaSenha').style.display='none';
+  setTimeout(()=>document.getElementById('rEmail').focus(),100);
+}
+function mostrarLogin(){
+  document.getElementById('telaLogin').style.display='block';
+  document.getElementById('telaReset').style.display='none';
+  document.getElementById('telaNovaSenha').style.display='none';
+}
+
+async function solicitarReset(){
+  const em=document.getElementById('rEmail').value.trim();
+  const btn=document.getElementById('rBtn');
+  const msg=document.getElementById('rMsg');
+  if(!em){msg.textContent='Informe seu e-mail.';msg.style.display='block';return;}
+  btn.textContent='Enviando...';btn.disabled=true;msg.style.display='none';
+  try{
+    const r=await fetch(`${SU}/auth/v1/recover`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SK},
+      body:JSON.stringify({email:em})
+    });
+    msg.textContent='✅ Link enviado! Verifique seu e-mail.';
+    msg.style.display='block';
+    msg.style.background='rgba(74,222,128,0.1)';
+    msg.style.borderColor='rgba(74,222,128,0.2)';
+    msg.style.color='#4ADE80';
+    btn.textContent='E-mail enviado';
+  }catch(e){
+    msg.textContent='Erro ao enviar. Tente novamente.';
+    msg.style.display='block';
+    btn.textContent='Enviar link de redefinição';
+    btn.disabled=false;
+  }
+}
+
+async function definirNovaSenha(){
+  const s1=document.getElementById('nSenha').value;
+  const s2=document.getElementById('nSenha2').value;
+  const btn=document.getElementById('nBtn');
+  const msg=document.getElementById('nMsg');
+  if(!s1||s1.length<6){msg.textContent='Senha precisa ter pelo menos 6 caracteres.';msg.style.display='block';return;}
+  if(s1!==s2){msg.textContent='As senhas não coincidem.';msg.style.display='block';return;}
+  btn.textContent='Salvando...';btn.disabled=true;msg.style.display='none';
+  try{
+    const r=await fetch(`${SU}/auth/v1/user`,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','apikey':SK,'Authorization':'Bearer '+window._resetToken},
+      body:JSON.stringify({password:s1})
+    });
+    const d=await r.json();
+    if(d.error)throw new Error(d.error);
+    msg.textContent='✅ Senha redefinida com sucesso! Redirecionando...';
+    msg.style.display='block';
+    msg.style.background='rgba(74,222,128,0.1)';
+    msg.style.borderColor='rgba(74,222,128,0.2)';
+    msg.style.color='#4ADE80';
+    setTimeout(()=>{
+      window._resetToken=null;
+      window.history.replaceState({},'','/sistema-mb.html');
+      mostrarLogin();
+    },2000);
+  }catch(e){
+    msg.textContent='Erro ao salvar senha. Tente novamente.';
+    msg.style.display='block';
+    btn.textContent='Salvar nova senha';
+    btn.disabled=false;
+  }
+}
+
+// Detecta token de reset na URL (vindo do link do e-mail)
+(function detectResetToken(){
+  const hash=window.location.hash;
+  const params=new URLSearchParams(hash.replace('#','?').replace('#','&'));
+  const token=params.get('access_token');
+  const type=params.get('type');
+  if(token&&type==='recovery'){
+    window._resetToken=token;
+    document.getElementById('telaLogin').style.display='none';
+    document.getElementById('telaReset').style.display='none';
+    document.getElementById('telaNovaSenha').style.display='block';
+  }
+})();
+
+chkSes();
+</script>
+
+</body></html>
